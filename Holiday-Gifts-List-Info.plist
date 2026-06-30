@@ -203,6 +203,11 @@
 			<string>3qcr597p9d.skadnetwork</string>
 		</dict>
 	</array>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.jaydenirwin.holidaygiftslist.viewingGift</string>
+		<string>com.jaydenirwin.holidaygiftslist.viewingRecipient</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

@@ -49,6 +49,9 @@ struct GiftListsApp: App {
                         .displayFrequency(.immediate),
                         .datastoreLocation(.applicationDefault)
                     ])
+
+                    // Surface gifts, recipients, and events to Spotlight / Siri.
+                    await SpotlightIndexer.reindexAll()
                     
                     // Allows Google to recognize my device and show demo ads to it
                     #if canImport(AdmobSwiftUI)
@@ -97,11 +100,7 @@ struct GiftListsApp: App {
                 }
             }
         }
-        #if targetEnvironment(simulator) || (os(macOS) && DEBUG)
-        .modelContainer(previewContainer)
-        #else
-        .modelContainer(for: [Gift.self, Recipient.self, Event.self])
-        #endif
+        .modelContainer(sharedModelContainer)
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active:

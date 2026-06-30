@@ -142,5 +142,8 @@ struct GiftView: View {
         .onChange(of: notes) { _, newValue in
             gift.notes = newValue
         }
+        #if !os(watchOS)
+        .advertisesOnScreen(GiftEntity(gift), as: OnScreenActivity.viewingGift, title: gift.title ?? "Gift")
+        #endif
     }
 }

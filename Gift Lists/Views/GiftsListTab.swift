@@ -176,7 +176,7 @@ struct GiftsListTab: View {
                 RecipientView(recipient: recipient)
             }
         }
-        #if canImport(FoundationModels)
+        #if canImport(FoundationModels) && !os(watchOS)
         .sheet(item: $generatingIdeasRecipient) { recipient in
             if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *) {
                 NavigationStack {
@@ -362,7 +362,7 @@ struct GiftsListTab: View {
                 Link(destination: URL(string: "https://www.256arts.com/joincommunity/")!) {
                     Label("Join Community", systemImage: "bubble.left.and.bubble.right")
                 }
-                Link(destination: URL(string: "https://github.com/256Arts/Holiday-Gifts-List")!) {
+                Link(destination: URL(string: "https://github.com/256Arts/Gift-Lists")!) {
                     Label("Contribute on GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
                 }
             }

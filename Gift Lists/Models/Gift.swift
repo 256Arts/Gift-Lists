@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-enum Status: String, Codable, CaseIterable, Identifiable {
+enum Status: String, Codable, CaseIterable, Identifiable, Sendable {
     case idea, inTransit, acquired, wrapped, given
     
     var title: String {
@@ -62,6 +62,8 @@ enum Status: String, Codable, CaseIterable, Identifiable {
 @Model
 final class Gift {
     
+    /// Stable identifier used to reference this gift from App Intents (Siri, Spotlight, Shortcuts).
+    var identifier: UUID?
     var title: String?
     var sortOrder: Int?
     var price: Double?
@@ -81,6 +83,7 @@ final class Gift {
     }
     
     init(title: String, sortOrder: Int, price: Double, notes: String? = nil, status: Status = .idea, recipient: Recipient? = nil, event: Event? = nil) {
+        self.identifier = UUID()
         self.title = title
         self.sortOrder = sortOrder
         self.price = price

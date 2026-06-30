@@ -34,12 +34,15 @@ final class Event {
         }
     }
     
+    /// Stable identifier used to reference this event from App Intents (Siri, Spotlight, Shortcuts).
+    var identifier: UUID?
     var name: String?
     var date: Date?
     var specialCase: SpecialCase?
     var gifts: [Gift]?
-    
+
     init(name: String, date: Date?, specialCase: SpecialCase? = nil) {
+        self.identifier = UUID()
         self.name = name
         self.date = date
         self.specialCase = specialCase

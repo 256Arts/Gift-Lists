@@ -73,7 +73,9 @@ struct RecipientView: View {
             }
         }
         .navigationTitle("Recipient")
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save", systemImage: "checkmark") {
@@ -105,5 +107,8 @@ struct RecipientView: View {
                 recipient.spendGoal = nil
             }
         }
+        #if !os(watchOS)
+        .advertisesOnScreen(RecipientEntity(recipient), as: OnScreenActivity.viewingRecipient, title: recipient.name ?? "Recipient")
+        #endif
     }
 }

@@ -83,7 +83,7 @@ struct GiftsList: View {
                                 newGiftRecipient = recipient
                             }
 
-                            #if canImport(FoundationModels)
+                            #if canImport(FoundationModels) && !os(watchOS)
                             if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *), GiftIdeaGenerator.isAvailable {
                                 Spacer()
                                 

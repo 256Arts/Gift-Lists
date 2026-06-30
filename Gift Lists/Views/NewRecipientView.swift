@@ -73,7 +73,9 @@ struct NewRecipientView: View {
         }
         #if !os(watchOS)
         .navigationTitle("New Recipient")
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         #endif
         .toolbar {
             #if !os(watchOS)

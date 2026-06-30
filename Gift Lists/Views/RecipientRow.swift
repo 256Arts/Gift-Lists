@@ -80,6 +80,7 @@ struct RecipientRow: View {
                 modelContext.delete(recipient)
             }
         }
+        .onScreenEntity(RecipientEntity.self, id: recipient.identifier)
         #endif
     }
 }

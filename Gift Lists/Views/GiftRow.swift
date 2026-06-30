@@ -116,6 +116,7 @@ struct GiftRow: View {
                 modelContext.delete(gift)
             }
         }
+        .onScreenEntity(GiftEntity.self, id: gift.identifier)
         #endif
     }
 }

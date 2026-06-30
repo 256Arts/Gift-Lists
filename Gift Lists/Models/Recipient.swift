@@ -12,7 +12,9 @@ import SwiftData
 final class Recipient {
     
     static let userName = "<Me>"
-    
+
+    /// Stable identifier used to reference this recipient from App Intents (Siri, Spotlight, Shortcuts).
+    var identifier: UUID?
     var name: String?
     var sortOrder: Int?
     var birthday: Date?
@@ -50,6 +52,7 @@ final class Recipient {
     }
     
     init(name: String, sortOrder: Int, birthday: Date? = nil, spendGoal: Double? = nil) {
+        self.identifier = UUID()
         self.name = name
         self.sortOrder = sortOrder
         self.birthday = birthday
