@@ -65,7 +65,7 @@ struct GiftView: View {
                     .overlay(alignment: .leading) {
                         if notes.isEmpty {
                             Text("Notes")
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 #else

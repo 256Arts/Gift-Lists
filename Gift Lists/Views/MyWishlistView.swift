@@ -43,7 +43,7 @@ struct MyWishlistView: View {
                 showingNewGift = true
             }
             #if os(watchOS)
-            .foregroundColor(.accentColor)
+            .foregroundStyle(.tint)
             #endif
             
             #if canImport(AdmobSwiftUI)

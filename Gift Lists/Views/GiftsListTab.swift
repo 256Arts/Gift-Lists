@@ -58,7 +58,17 @@ struct GiftsListTab: View {
     private var biometryType: LABiometryType {
         LAContext().biometryType
     }
-    
+
+    #if !os(watchOS)
+    private var addRecipientButton: some View {
+        Button("Add Recipient", systemImage: "person.badge.plus") {
+            newRecipientSortOrder = (recipients.max(by: { $0.sortOrder ?? 0 < $1.sortOrder ?? 0 })?.sortOrder ?? 0) + 1
+            showingNewRecipient = true
+        }
+        .popoverTip(AddRecipientTip())
+    }
+    #endif
+
     var body: some View {
         Group {
             #if os(macOS)
@@ -122,33 +132,24 @@ struct GiftsListTab: View {
         }
         #endif
         .toolbar {
-            #if os(iOS)
-            ToolbarItemGroup(placement: .secondaryAction) {
-                secondaryActions()
-            }
-            #endif
-            
             #if os(watchOS)
             ToolbarItem(placement: .topBarLeading) {
                 Button("Add Recipient", systemImage: "person.badge.plus") {
                     showingNewRecipient = true
                 }
             }
-            #else
+            #elseif os(macOS)
             ToolbarItem(placement: .primaryAction) {
-                Button("Add Recipient", systemImage: "person.badge.plus") {
-                    newRecipientSortOrder = (recipients.max(by: { $0.sortOrder ?? 0 < $1.sortOrder ?? 0 })?.sortOrder ?? 0) + 1
-                    showingNewRecipient = true
-                }
-                .popoverTip(AddRecipientTip())
+                addRecipientButton
             }
-            #endif
-            
-            #if os(visionOS)
-            ToolbarItem(placement: .primaryAction) {
-                Menu("More", systemImage: "ellipsis") {
-                    secondaryActions()
-                }
+            #else
+            // The primary action stays pinned at the trailing edge no matter how tight the bar gets.
+            ToolbarItem(placement: .topBarPinnedTrailing) {
+                addRecipientButton
+            }
+            // Secondary settings always live in the overflow menu.
+            ToolbarOverflowMenu {
+                secondaryActions()
             }
             #endif
         }
@@ -157,11 +158,7 @@ struct GiftsListTab: View {
                 NewGiftView(recipient: nil, sortOrder: newGiftSortOrder)
             }
         }
-        .sheet(item: Binding(get: {
-            newGiftRecipient
-        }, set: { newValue in
-            newGiftRecipient = newValue
-        })) { recipient in
+        .sheet(item: $newGiftRecipient) { recipient in
             NavigationStack {
                 NewGiftView(recipient: recipient, sortOrder: newGiftSortOrder, event: eventFilter)
             }

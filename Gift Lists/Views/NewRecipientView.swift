@@ -21,7 +21,15 @@ struct NewRecipientView: View {
     @State var hasBirthday: Bool = false
     @State var birthday: Date = .now.addingTimeInterval(-30.0 * 365 * 24 * 60 * 60)
     @State var spendGoal: Double = 0.0
-    
+
+    #if !os(watchOS)
+    private var cancelButton: some View {
+        Button("Cancel", systemImage: "xmark") {
+            dismiss()
+        }
+    }
+    #endif
+
     var body: some View {
         Form {
             #if !os(watchOS) && !os(macOS)
@@ -78,11 +86,15 @@ struct NewRecipientView: View {
         #endif
         #endif
         .toolbar {
-            #if !os(watchOS)
+            #if os(iOS)
+            // Cancel is the first to collapse into the overflow menu when the bar is constrained.
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel", systemImage: "xmark") {
-                    dismiss()
-                }
+                cancelButton
+            }
+            .visibilityPriority(.low)
+            #elseif !os(watchOS)
+            ToolbarItem(placement: .cancellationAction) {
+                cancelButton
             }
             #endif
             ToolbarItem(placement: .confirmationAction) {

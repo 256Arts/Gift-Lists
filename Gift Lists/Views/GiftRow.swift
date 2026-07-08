@@ -25,7 +25,7 @@ struct GiftRow: View {
             Spacer()
             
             Text(gift.price ?? .nan, format: .currency(code: Locale.current.currencyID).precision(.fractionLength(0...2)))
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .privacySensitive()
             
             if showStatus {

@@ -35,7 +35,7 @@ struct ShoppingRow: View {
                             }
                         }
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     }
                 }
                 

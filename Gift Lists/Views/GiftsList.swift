@@ -66,7 +66,7 @@ struct GiftsList: View {
                         newGiftSortOrder = (gifts.max(by: { $0.sortOrder ?? 0 < $1.sortOrder ?? 0 })?.sortOrder ?? 0) + 1
                         newGiftRecipient = recipient
                     }
-                    .foregroundColor(.accentColor)
+                    .foregroundStyle(.tint)
                 } header: {
                     RecipientRow(recipient: recipient, showBirthday: recipientSortBy == .nearestBirthday, filteredGifts: filterAndSort(recipient.gifts ?? []), recipientName: $recipientName, editingRecipient: $editingRecipient)
                 }
@@ -119,7 +119,7 @@ struct GiftsList: View {
                     showingNewGiftWithoutRecipient = true
                 }
                 #if os(watchOS)
-                .foregroundColor(.accentColor)
+                .foregroundStyle(.tint)
                 #endif
             } label: {
                 Label("Gifts with no Recipient", systemImage: "person.slash.fill")
