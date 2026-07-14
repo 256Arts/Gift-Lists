@@ -1,10 +1,3 @@
-//
-//  ExperienceManager.swift
-//  Gift Lists
-//
-//  Created by 256 Arts on 2025-12-13.
-//
-        
 import AppTrackingTransparency
 
 /// Manages flags determining how ads and app review requests behave

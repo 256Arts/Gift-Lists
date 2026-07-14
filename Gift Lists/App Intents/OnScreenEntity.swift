@@ -1,10 +1,3 @@
-//
-//  OnScreenEntity.swift
-//  Holiday Gifts List
-//
-//  Created by Claude on 2026-06-29.
-//
-
 import SwiftUI
 import AppIntents
 

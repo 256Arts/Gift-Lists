@@ -1,10 +1,3 @@
-//
-//  ShoppingRow.swift
-//  Holiday Gifts List
-//
-//  Created by 256 Arts Developer on 2023-10-22.
-//
-
 import SwiftUI
 
 struct ShoppingRow: View {

@@ -1,10 +1,3 @@
-//
-//  Status+AppEnum.swift
-//  Holiday Gifts List
-//
-//  Created by Claude on 2026-06-29.
-//
-
 import AppIntents
 
 /// Exposes the gift lifecycle to Siri and Shortcuts so it can be spoken,

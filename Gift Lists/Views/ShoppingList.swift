@@ -1,10 +1,3 @@
-//
-//  ShoppingList.swift
-//  Holiday Gifts List
-//
-//  Created by 256 Arts Developer on 2023-10-22.
-//
-
 import SwiftUI
 import SwiftData
 #if canImport(AdmobSwiftUI)

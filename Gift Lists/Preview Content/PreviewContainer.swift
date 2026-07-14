@@ -1,10 +1,3 @@
-//
-//  PreviewContainer.swift
-//  Holiday Gifts List
-//
-//  Created by 256 Arts Developer on 2023-10-22.
-//
-
 #if DEBUG
 import SwiftData
 import Foundation

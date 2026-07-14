@@ -1,10 +1,3 @@
-//
-//  GiftListsWatchApp.swift
-//  Holiday Gifts List Watch Watch App
-//
-//  Created by 256 Arts Developer on 2023-07-24.
-//
-
 import SwiftUI
 
 @main

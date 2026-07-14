@@ -1,10 +1,3 @@
-//
-//  GiftIdeasView.swift
-//  Gift Lists
-//
-//  Created by 256 Arts on 2026-06-26.
-//
-
 #if canImport(FoundationModels) && !os(watchOS)
 import SwiftUI
 

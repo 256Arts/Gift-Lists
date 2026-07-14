@@ -1,10 +1,3 @@
-//
-//  MainTabView.swift
-//  Holiday Gifts List
-//
-//  Created by Jayden Irwin on 2025-09-16.
-//
-
 import SwiftUI
 import SwiftData
 

@@ -1,10 +1,3 @@
-//
-//  SpotlightIndexer.swift
-//  Holiday Gifts List
-//
-//  Created by Claude on 2026-06-29.
-//
-
 import SwiftData
 import CoreSpotlight
 

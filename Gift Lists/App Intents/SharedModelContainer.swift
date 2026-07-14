@@ -1,10 +1,3 @@
-//
-//  SharedModelContainer.swift
-//  Holiday Gifts List
-//
-//  Created by Claude on 2026-06-29.
-//
-
 import SwiftData
 
 /// The single source of truth for the app's persistent store.

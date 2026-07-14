@@ -1,10 +1,3 @@
-//
-//  NewRecipientView.swift
-//  Holiday Gifts List
-//
-//  Created by 256 Arts Developer on 2023-07-24.
-//
-
 import Contacts
 import SwiftUI
 import SwiftData

@@ -1,10 +1,3 @@
-//
-//  GiftsList.swift
-//  Gift Lists
-//
-//  Created by 256 Arts on 2025-12-12.
-//
-
 import SwiftUI
 import SwiftData
 #if canImport(AdmobSwiftUI)

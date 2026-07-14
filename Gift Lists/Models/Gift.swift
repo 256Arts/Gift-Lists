@@ -1,10 +1,3 @@
-//
-//  Gift.swift
-//  Holiday Gifts List
-//
-//  Created by 256 Arts Developer on 2023-06-09.
-//
-
 import SwiftUI
 import SwiftData
 

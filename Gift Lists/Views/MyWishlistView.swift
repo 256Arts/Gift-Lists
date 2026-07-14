@@ -1,10 +1,3 @@
-//
-//  MyWishlistView.swift
-//  Holiday Gifts List
-//
-//  Created by 256 Arts Developer on 2024-12-04.
-//
-
 import SwiftUI
 import SwiftData
 #if canImport(AdmobSwiftUI)

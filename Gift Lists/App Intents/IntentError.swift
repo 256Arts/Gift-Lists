@@ -1,10 +1,3 @@
-//
-//  IntentError.swift
-//  Holiday Gifts List
-//
-//  Created by Claude on 2026-06-29.
-//
-
 import AppIntents
 
 /// Errors surfaced to Siri / Shortcuts when an intent can't complete.

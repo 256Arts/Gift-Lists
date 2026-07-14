@@ -1,10 +1,3 @@
-//
-//  GiftListsShortcuts.swift
-//  Holiday Gifts List
-//
-//  Created by Claude on 2026-06-29.
-//
-
 import AppIntents
 
 /// Registers the app's intents with Siri, Spotlight, and the Shortcuts app,

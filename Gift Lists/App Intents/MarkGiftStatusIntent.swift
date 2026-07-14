@@ -1,10 +1,3 @@
-//
-//  MarkGiftStatusIntent.swift
-//  Holiday Gifts List
-//
-//  Created by Claude on 2026-06-29.
-//
-
 import AppIntents
 import SwiftData
 

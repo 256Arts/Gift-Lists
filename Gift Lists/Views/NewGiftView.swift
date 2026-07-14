@@ -1,10 +1,3 @@
-//
-//  NewGiftView.swift
-//  Holiday Gifts List
-//
-//  Created by 256 Arts Developer on 2023-04-18.
-//
-
 import SwiftUI
 import SwiftData
 import StoreKit
