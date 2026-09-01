@@ -23,14 +23,6 @@ struct NewGiftView: View {
     @State var notes: String = ""
     @State var event: Event?
 
-    #if !os(watchOS)
-    private var cancelButton: some View {
-        Button("Cancel", systemImage: "xmark") {
-            dismiss()
-        }
-    }
-    #endif
-
     var body: some View {
         Form {
             Section {
@@ -95,15 +87,9 @@ struct NewGiftView: View {
         .navigationTitle("New Gift")
         #endif
         .toolbar {
-            #if os(iOS)
-            // Cancel is the first to collapse into the overflow menu when the bar is constrained.
-            ToolbarItem(placement: .cancellationAction) {
-                cancelButton
-            }
-            .visibilityPriority(.low)
-            #elseif !os(watchOS)
-            ToolbarItem(placement: .cancellationAction) {
-                cancelButton
+            #if !os(watchOS)
+            CancelToolbarItem {
+                dismiss()
             }
             #endif
             ToolbarItem(placement: .confirmationAction) {

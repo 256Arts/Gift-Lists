@@ -136,13 +136,30 @@ struct GiftsListTab: View {
                 addRecipientButton
             }
             #else
-            // The primary action stays pinned at the trailing edge no matter how tight the bar gets.
-            ToolbarItem(placement: .topBarPinnedTrailing) {
-                addRecipientButton
-            }
-            // Secondary settings always live in the overflow menu.
-            ToolbarOverflowMenu {
-                secondaryActions()
+            if #available(iOS 27.0, visionOS 27.0, *) {
+                // The primary action stays pinned at the trailing edge no matter how tight the bar gets.
+                ToolbarItem(placement: .topBarPinnedTrailing) {
+                    addRecipientButton
+                }
+                // Secondary settings always live in the overflow menu.
+                ToolbarOverflowMenu {
+                    secondaryActions()
+                }
+            } else {
+                ToolbarItem(placement: .primaryAction) {
+                    addRecipientButton
+                }
+                #if os(visionOS)
+                ToolbarItem(placement: .primaryAction) {
+                    Menu("More", systemImage: "ellipsis") {
+                        secondaryActions()
+                    }
+                }
+                #else
+                ToolbarItemGroup(placement: .secondaryAction) {
+                    secondaryActions()
+                }
+                #endif
             }
             #endif
         }
