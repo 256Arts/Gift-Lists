@@ -37,6 +37,10 @@ struct GiftListsApp: App {
             MainTabView()
                 .redacted(reason: biometrics.isAuthenticated ? [] : .privacy)
                 .task {
+                    // A screenshot run skips all of this: a tip popover or the tracking alert would
+                    // land on top of a shot, and the demo data has no business in Spotlight.
+                    guard !ScreenshotMode.isActive else { return }
+                    
                     // Configure and load your tips at app launch.
                     try? Tips.configure([
                         .displayFrequency(.immediate),

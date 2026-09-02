@@ -59,6 +59,9 @@ struct MainTabView: View {
 //        .tabBarMinimizeBehavior(.onScrollDown)
         #if os(macOS)
         .tabViewStyle(.sidebarAdaptable)
+        .task {
+            await ScreenshotMode.pinSidebarWidth()
+        }
         #endif
     }
 }

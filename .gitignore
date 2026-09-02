@@ -1,0 +1,15 @@
+# Xcode
+DerivedData/
+*.xcresult
+
+# Screenshot pipeline (Scripts/screenshots.sh)
+build/
+Screenshots/
+
+# Conductor workspace scratch
+.context/
+
+.DS_Store
+
+# Conductor per-machine overrides (a symlink into the primary checkout)
+.conductor/settings.local.toml

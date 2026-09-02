@@ -58,6 +58,7 @@ struct RecipientRow: View {
                 .fontWeight(.medium)
                 .foregroundStyle(filteredGifts.isEmpty ? .secondary : .primary)
         }
+        .accessibilityIdentifier("Recipient.\(recipient.name ?? "")")
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button("Delete", systemImage: "trash", role: .destructive) {
                 modelContext.delete(recipient)

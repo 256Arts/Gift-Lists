@@ -7,6 +7,13 @@ final class BiometricAuthentication {
     var isAuthenticated = false
     
     func authenticate() async {
+        // A screenshot run shares the real defaults domain, so a machine with the lock turned on
+        // would prompt for Touch ID on every launch and redact the very content being photographed.
+        guard !ScreenshotMode.isActive else {
+            isAuthenticated = true
+            return
+        }
+
         guard !isAuthenticated, UserDefaults.standard.bool(forKey: UserDefaults.Key.requireAuthenication) else {
             isAuthenticated = true
             return

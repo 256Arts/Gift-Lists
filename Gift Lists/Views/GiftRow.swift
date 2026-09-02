@@ -68,6 +68,7 @@ struct GiftRow: View {
             }
         }
         .accessibilityRemoveTraits(.isSelected)
+        .accessibilityIdentifier("Gift.\(gift.title ?? "")")
         .contentShape(Rectangle())
         .onTapGesture {
             showingDetails = true
