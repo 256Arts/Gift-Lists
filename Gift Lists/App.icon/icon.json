@@ -6,6 +6,7 @@
     {
       "layers" : [
         {
+          "blend-mode" : "normal",
           "fill" : {
             "solid" : "extended-gray:1.00000,1.00000"
           },
