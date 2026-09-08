@@ -317,6 +317,28 @@ struct GiftsListTab: View {
     #if os(iOS) || os(visionOS)
     @ViewBuilder
     private func secondaryActions() -> some View {
+        #if os(visionOS)
+        // visionOS draws no tappable navigation title, so the title menu below never appears there
+        // and the event filter would be unreachable. Inline so the events read as their own section
+        // rather than hiding behind a submenu row.
+        Section {
+            Picker("Event Filter", selection: $eventFilter) {
+                ForEach(events) { event in
+                    Text(event.name ?? "")
+                        .tag(event as Event?)
+                }
+                
+                Text("All")
+                    .tag(nil as Event?)
+            }
+            .pickerStyle(.inline)
+            
+            Button("Manage Events", systemImage: "ellipsis") {
+                showingManageEvents = true
+            }
+        }
+        #endif
+        
         Toggle("Require \(biometryType.name ?? "")", systemImage: biometryType.systemImageName ?? "", isOn: $requireAuthenication)
         
         if eventFilter?.specialCase?.wallpaper != nil, !isAssistiveAccessEnabled {

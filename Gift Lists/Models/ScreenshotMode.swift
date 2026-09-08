@@ -17,9 +17,11 @@ enum ScreenshotMode {
         ProcessInfo.processInfo.arguments.contains("-screenshotMode")
     }
 
-    /// The recipient the shots expand, and the gift they open. Named here because the UI test looks
+    /// The recipients the shots expand, and the gift they open. Named here because the UI test looks
     /// them up by accessibility identifier.
     static let featuredRecipientName = "Noelle"
+    static let secondRecipientName = "Chris"
+    /// Sits on the Birthday event, which is the list the details shot is taken over.
     static let featuredGiftTitle = "Espresso Machine"
 
     /// A throwaway store holding nothing but the seed.
@@ -37,12 +39,27 @@ enum ScreenshotMode {
         return container
     }()
 
-    /// Birthdays are pinned to real years so a recipient's age does not drift between runs. The
-    /// holiday countdown counts to the next December 25th and so still moves with the calendar.
     private static let calendar = Calendar(identifier: .gregorian)
 
     private static func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day))!
+    }
+
+    /// A birthday that falls `days` from today, in a pinned birth year.
+    ///
+    /// The Birthday list sorts by nearest birthday, so fixed calendar dates would rotate the
+    /// recipients past each other over the year and photograph a different list every season.
+    /// Holding the *distance* fixed pins the order — and the "N days left" each row shows — while
+    /// the pinned year keeps the recipient's age from drifting.
+    private static func upcomingBirthday(in days: Int, bornIn year: Int) -> Date {
+        let next = calendar.date(byAdding: .day, value: days, to: .now)!
+        var components = calendar.dateComponents([.month, .day], from: next)
+        components.year = year
+        // February 29th exists in the current year but not in most birth years; the 28th always does.
+        if components.month == 2, components.day == 29 {
+            components.day = 28
+        }
+        return calendar.date(from: components)!
     }
 
     /// Fills `context` with lists worth photographing: enough recipients to fill a tall window, a
@@ -59,11 +76,13 @@ enum ScreenshotMode {
             context.insert(event)
         }
 
-        let noelle = Recipient(name: featuredRecipientName, sortOrder: 0, birthday: date(1994, 7, 14), spendGoal: 400)
-        let chris = Recipient(name: "Chris", sortOrder: 1, birthday: date(1989, 12, 25), spendGoal: 250)
-        let nicholas = Recipient(name: "Nicholas", sortOrder: 2, birthday: date(1997, 3, 6))
-        let amara = Recipient(name: "Amara", sortOrder: 3, birthday: date(2001, 9, 2), spendGoal: 150)
-        let theo = Recipient(name: "Theo", sortOrder: 4, birthday: date(2015, 5, 20))
+        // The two the shots expand come first in both lists: they lead the Gifts tab by creation
+        // order and the Birthday tab by having the nearest birthdays.
+        let noelle = Recipient(name: featuredRecipientName, sortOrder: 0, birthday: upcomingBirthday(in: 12, bornIn: 1994), spendGoal: 400)
+        let chris = Recipient(name: secondRecipientName, sortOrder: 1, birthday: upcomingBirthday(in: 31, bornIn: 1989), spendGoal: 250)
+        let nicholas = Recipient(name: "Nicholas", sortOrder: 2, birthday: upcomingBirthday(in: 68, bornIn: 1997))
+        let amara = Recipient(name: "Amara", sortOrder: 3, birthday: upcomingBirthday(in: 145, bornIn: 2001), spendGoal: 150)
+        let theo = Recipient(name: "Theo", sortOrder: 4, birthday: upcomingBirthday(in: 233, bornIn: 2015))
         let me = Recipient(name: Recipient.userName, sortOrder: -1)
         for recipient in [noelle, chris, nicholas, amara, theo, me] {
             context.insert(recipient)
@@ -72,7 +91,6 @@ enum ScreenshotMode {
         // Order within a recipient is the app's own (status, then price, then name), so these are
         // written in whatever order reads best rather than in display order.
         let gifts = [
-            Gift(title: featuredGiftTitle, sortOrder: 0, price: 249, status: .wrapped, recipient: noelle, event: holidays),
             Gift(title: "Wool Scarf", sortOrder: 1, price: 65, status: .acquired, recipient: noelle, event: holidays),
             Gift(title: "Film Camera", sortOrder: 2, price: 180, status: .inTransit, recipient: noelle, event: holidays),
             Gift(title: "Pottery Class", sortOrder: 3, price: 90, status: .idea, recipient: noelle, event: holidays),
@@ -91,16 +109,26 @@ enum ScreenshotMode {
             Gift(title: "LEGO Space Station", sortOrder: 12, price: 120, status: .acquired, recipient: theo, event: holidays),
             Gift(title: "Telescope", sortOrder: 13, price: 210, status: .idea, recipient: theo, event: holidays),
 
-            Gift(title: "Running Shoes", sortOrder: 14, price: 150, status: .idea, recipient: noelle, event: birthday),
-            Gift(title: "Cookbook", sortOrder: 15, price: 40, status: .acquired, recipient: chris, event: birthday),
-            Gift(title: "Board Game", sortOrder: 16, price: 55, status: .idea, recipient: theo, event: birthday),
+            // The Birthday list carries two of the four shots, so it is stocked as deeply as the
+            // holiday one. The featured gift has notes because the details shot is taken on it.
+            Gift(title: featuredGiftTitle, sortOrder: 14, price: 249, notes: "Matte black, with the built-in burr grinder.", status: .acquired, recipient: noelle, event: birthday),
+            Gift(title: "Running Shoes", sortOrder: 15, price: 150, status: .inTransit, recipient: noelle, event: birthday),
+            Gift(title: "Concert Tickets", sortOrder: 16, price: 220, status: .idea, recipient: noelle, event: birthday),
+
+            Gift(title: "Whisky Tasting Set", sortOrder: 17, price: 110, status: .wrapped, recipient: chris, event: birthday),
+            Gift(title: "Cookbook", sortOrder: 18, price: 40, status: .acquired, recipient: chris, event: birthday),
+            Gift(title: "Leather Wallet", sortOrder: 19, price: 85, status: .idea, recipient: chris, event: birthday),
+
+            Gift(title: "Bluetooth Speaker", sortOrder: 20, price: 120, status: .acquired, recipient: nicholas, event: birthday),
+            Gift(title: "Sketchbook Set", sortOrder: 21, price: 45, status: .idea, recipient: amara, event: birthday),
+            Gift(title: "Board Game", sortOrder: 22, price: 55, status: .idea, recipient: theo, event: birthday),
 
             // The wishlist tab reads these, and the Shopping List deliberately excludes them.
-            Gift(title: "Mechanical Keyboard", sortOrder: 17, price: 165, status: .idea, recipient: me, event: holidays),
-            Gift(title: "Espresso Grinder", sortOrder: 18, price: 230, status: .idea, recipient: me, event: holidays),
-            Gift(title: "Linen Sheets", sortOrder: 19, price: 120, status: .idea, recipient: me, event: holidays),
-            Gift(title: "Trail Backpack", sortOrder: 20, price: 145, status: .idea, recipient: me, event: birthday),
-            Gift(title: "Fountain Pen", sortOrder: 21, price: 70, status: .idea, recipient: me, event: birthday)
+            Gift(title: "Mechanical Keyboard", sortOrder: 23, price: 165, status: .idea, recipient: me, event: holidays),
+            Gift(title: "Espresso Grinder", sortOrder: 24, price: 230, status: .idea, recipient: me, event: holidays),
+            Gift(title: "Linen Sheets", sortOrder: 25, price: 120, status: .idea, recipient: me, event: holidays),
+            Gift(title: "Trail Backpack", sortOrder: 26, price: 145, status: .idea, recipient: me, event: birthday),
+            Gift(title: "Fountain Pen", sortOrder: 27, price: 70, status: .idea, recipient: me, event: birthday)
         ]
         for gift in gifts {
             context.insert(gift)
