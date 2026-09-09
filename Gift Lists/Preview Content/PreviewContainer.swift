@@ -4,7 +4,11 @@ import Foundation
 
 @MainActor
 let previewContainer: ModelContainer = {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    // `cloudKitDatabase: .none` is not optional. In-memory only keeps the demo data off disk;
+    // without it SwiftData picks up the CloudKit container from the app's entitlements and pushes
+    // every gift below into the real iCloud account. This container backs the whole app on the
+    // simulator and in macOS Debug builds, not just previews.
+    let config = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
     let container = try! ModelContainer(for: Gift.self, configurations: config)
     let calendar = Calendar.current
     
