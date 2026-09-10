@@ -20,15 +20,16 @@ final class ScreenshotTests: XCTestCase {
         app.launch()
 
         // Waiting on a seeded row before touching anything keeps the walk from beating the store.
-        XCTAssertTrue(waitForControl("Recipient.Noelle", timeout: 30).exists, "seeded content never appeared")
+        XCTAssertTrue(waitForControl("Recipient.\(Self.holidayRecipients[0])", timeout: 30).exists,
+                      "seeded content never appeared")
 
         // The wallpaper — and, on the holidays, the countdown — only appears once the list is
         // filtered to an event, so every list shot is taken filtered.
-        selectEvent("Holidays")
+        selectEvent("Holidays", expanding: Self.holidayRecipients)
         settle()
         capture("01-holidays")
 
-        selectEvent("Birthday")
+        selectEvent("Birthday", expanding: Self.birthdayRecipients)
         settle()
 
         // The gift details share the birthday shot wherever they draw over the list. On the phone
@@ -59,10 +60,16 @@ final class ScreenshotTests: XCTestCase {
     /// The event the list is currently filtered to, which is also its navigation title's stem.
     private var currentEvent = "All"
 
+    /// The pair leading each event's list, which is the pair the shots open. The two events are
+    /// seeded with separate casts, so the names differ per event — `ScreenshotMode` holds the same
+    /// pairs on the app's side.
+    private static let holidayRecipients = ["Noelle", "Chris"]
+    private static let birthdayRecipients = ["Maya", "Daniel"]
+
     /// Filters the gifts list down to one event, which is what brings out the wallpaper and, on the
     /// holidays, the countdown. Each event gets its own sidebar tab on the Mac; elsewhere the picker
     /// hangs off the navigation title, whose button is labelled "<title>, Actions Menu".
-    private func selectEvent(_ name: String) {
+    private func selectEvent(_ name: String, expanding recipients: [String]) {
         #if os(macOS)
         activate(waitForControl("\(name) Gifts"), "the \(name) tab")
         #elseif os(visionOS)
@@ -81,8 +88,9 @@ final class ScreenshotTests: XCTestCase {
         currentEvent = name
 
         // A different event means a different list, so the rows come back collapsed.
-        expandRecipient("Noelle")
-        expandRecipient("Chris")
+        for recipient in recipients {
+            expandRecipient(recipient)
+        }
     }
 
     /// Opens the details for the gift the details shot is taken on.
@@ -111,8 +119,11 @@ final class ScreenshotTests: XCTestCase {
     private func expandRecipient(_ name: String) {
         let identifier = "Recipient.\(name)"
         #if os(macOS)
-        let title = app.staticTexts[identifier]
-        XCTAssertTrue(title.waitForExistence(timeout: 15), "never found \(name)'s row")
+        let title = app.staticTexts.matching(Self.identifierPredicate(identifier)).element(boundBy: 0)
+        if !title.waitForExistence(timeout: 15) {
+            attach(XCTAttachment(string: app.debugDescription), named: "tree-missing-\(identifier)")
+            return XCTFail("never found \(name)'s row")
+        }
 
         // The triangle carries the generic NSOutlineViewDisclosureButtonKey identifier, so the only
         // thing tying one to a recipient is sitting on the same line as their name.
@@ -145,6 +156,19 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Matches an accessibility identifier the app set, whether or not the platform merged the row
+    /// that carries it.
+    ///
+    /// An identifier set on a row propagates to every element inside it, and when AppKit decides the
+    /// row reads better as one element — the Birthday list does this, its extra "N days left" text
+    /// being what tips it over — it merges those children and *joins their identifiers with a
+    /// hyphen*: a row named `Recipient.Noelle` answers to `Recipient.Noelle-Recipient.Noelle`. So the
+    /// lookup takes the identifier as one hyphen-separated component rather than the whole string.
+    private static func identifierPredicate(_ identifier: String) -> NSPredicate {
+        NSPredicate(format: "identifier == %@ OR identifier BEGINSWITH %@ OR identifier CONTAINS %@",
+                    identifier, identifier + "-", "-" + identifier)
+    }
+
     /// Tabs, rows, and toolbar segments surface as different element types per platform — a tab is a
     /// `Button` on iOS and a `RadioButton` on macOS, and a list row is a `Cell` — so look through the
     /// types that can actually be activated rather than guessing one.
@@ -152,12 +176,15 @@ final class ScreenshotTests: XCTestCase {
         for query in [app.buttons, app.radioButtons, app.descendants(matching: .tab), app.cells, app.staticTexts] {
             // An identifier set on a row propagates to every text inside it, so a gift's title and
             // its price both answer to the row's name — take the first rather than failing the click.
-            let byIdentifier = query.matching(identifier: label)
+            let byIdentifier = query.matching(Self.identifierPredicate(label))
             // `element(boundBy:)` rather than `firstMatch`: the latter short-circuits the query and
             // hands back an element that reports itself absent even when the query matched one.
             if byIdentifier.count > 0 { return byIdentifier.element(boundBy: 0) }
-            let byLabel = query[label]
-            if byLabel.exists { return byLabel }
+            // Same reason as the identifier lookup above, and not only for rows: a sidebar-adaptable
+            // `TabView` publishes each tab twice on the iPad, once in the sidebar and once in the
+            // tab bar, and `query[label]` refuses to resolve to either.
+            let byLabel = query.matching(NSPredicate(format: "label == %@", label))
+            if byLabel.count > 0 { return byLabel.element(boundBy: 0) }
         }
         // The Mac sidebar's tabs carry their title as a value, with no identifier or label to match.
         let byValue = app.staticTexts.matching(NSPredicate(format: "value == %@", label))

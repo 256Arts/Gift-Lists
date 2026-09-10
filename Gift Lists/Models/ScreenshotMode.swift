@@ -17,11 +17,14 @@ enum ScreenshotMode {
         ProcessInfo.processInfo.arguments.contains("-screenshotMode")
     }
 
-    /// The recipients the shots expand, and the gift they open. Named here because the UI test looks
-    /// them up by accessibility identifier.
-    static let featuredRecipientName = "Noelle"
-    static let secondRecipientName = "Chris"
-    /// Sits on the Birthday event, which is the list the details shot is taken over.
+    /// The recipients each shot expands, and the gift the details shot opens. Named here because the
+    /// UI test looks them up by accessibility identifier.
+    ///
+    /// Each event has its own cast, so the two lists share no rows; the pair named for an event leads
+    /// it and is the pair the walk opens.
+    static let holidayRecipientNames = ["Noelle", "Chris"]
+    static let birthdayRecipientNames = ["Maya", "Daniel"]
+    /// Sits on Maya's Birthday list, which is what the details shot is taken over.
     static let featuredGiftTitle = "Espresso Machine"
 
     /// A throwaway store holding nothing but the seed.
@@ -76,59 +79,74 @@ enum ScreenshotMode {
             context.insert(event)
         }
 
-        // The two the shots expand come first in both lists: they lead the Gifts tab by creation
-        // order and the Birthday tab by having the nearest birthdays.
-        let noelle = Recipient(name: featuredRecipientName, sortOrder: 0, birthday: upcomingBirthday(in: 12, bornIn: 1994), spendGoal: 400)
-        let chris = Recipient(name: secondRecipientName, sortOrder: 1, birthday: upcomingBirthday(in: 31, bornIn: 1989), spendGoal: 250)
+        // Each event gets its own cast, so the holiday and birthday shots share no rows: Noelle,
+        // Chris, Nicholas and Holly have gifts only for the holidays, Maya, Daniel, Amara and Theo
+        // only for the birthdays. `GiftsList` drops a recipient with nothing for the filtered event
+        // from the other event's shot in screenshot mode.
+        //
+        // The holiday cast leads the Gifts tab by creation order; the birthday cast leads the
+        // Birthday tab by having the nearest birthdays. Each list's first two are the ones the walk
+        // expands.
+        let noelle = Recipient(name: holidayRecipientNames[0], sortOrder: 0, birthday: upcomingBirthday(in: 96, bornIn: 1994), spendGoal: 400)
+        let chris = Recipient(name: holidayRecipientNames[1], sortOrder: 1, birthday: upcomingBirthday(in: 121, bornIn: 1989), spendGoal: 250)
         let nicholas = Recipient(name: "Nicholas", sortOrder: 2, birthday: upcomingBirthday(in: 68, bornIn: 1997))
-        let amara = Recipient(name: "Amara", sortOrder: 3, birthday: upcomingBirthday(in: 145, bornIn: 2001), spendGoal: 150)
-        let theo = Recipient(name: "Theo", sortOrder: 4, birthday: upcomingBirthday(in: 233, bornIn: 2015))
+        let holly = Recipient(name: "Holly", sortOrder: 3, birthday: upcomingBirthday(in: 196, bornIn: 1992), spendGoal: 200)
+        let maya = Recipient(name: birthdayRecipientNames[0], sortOrder: 4, birthday: upcomingBirthday(in: 9, bornIn: 1996), spendGoal: 500)
+        let daniel = Recipient(name: birthdayRecipientNames[1], sortOrder: 5, birthday: upcomingBirthday(in: 26, bornIn: 1988), spendGoal: 250)
+        let amara = Recipient(name: "Amara", sortOrder: 6, birthday: upcomingBirthday(in: 145, bornIn: 2001), spendGoal: 150)
+        let theo = Recipient(name: "Theo", sortOrder: 7, birthday: upcomingBirthday(in: 233, bornIn: 2015))
         let me = Recipient(name: Recipient.userName, sortOrder: -1)
-        for recipient in [noelle, chris, nicholas, amara, theo, me] {
+        for recipient in [noelle, chris, nicholas, holly, maya, daniel, amara, theo, me] {
             context.insert(recipient)
         }
 
         // Order within a recipient is the app's own (status, then price, then name), so these are
         // written in whatever order reads best rather than in display order.
+        //
+        // The holiday gifts are themed and the birthday ones everyday, so the two list shots read as
+        // genuinely different lists rather than one list twice.
         let gifts = [
-            Gift(title: "Wool Scarf", sortOrder: 1, price: 65, status: .acquired, recipient: noelle, event: holidays),
-            Gift(title: "Film Camera", sortOrder: 2, price: 180, status: .inTransit, recipient: noelle, event: holidays),
-            Gift(title: "Pottery Class", sortOrder: 3, price: 90, status: .idea, recipient: noelle, event: holidays),
+            Gift(title: "Holiday Sweater", sortOrder: 1, price: 65, status: .acquired, recipient: noelle, event: holidays),
+            Gift(title: "Ice Skates", sortOrder: 2, price: 180, status: .inTransit, recipient: noelle, event: holidays),
+            Gift(title: "Spiced Candle Set", sortOrder: 3, price: 90, status: .idea, recipient: noelle, event: holidays),
+            Gift(title: "iPad", sortOrder: 4, price: 349, status: .idea, recipient: noelle, event: holidays),
 
-            Gift(title: "Chef's Knife", sortOrder: 4, price: 140, status: .wrapped, recipient: chris, event: holidays),
-            Gift(title: "Vinyl Record", sortOrder: 5, price: 35, status: .acquired, recipient: chris, event: holidays),
-            Gift(title: "Hiking Boots", sortOrder: 6, price: 175, status: .idea, recipient: chris, event: holidays),
+            Gift(title: "Wool Peacoat", sortOrder: 5, price: 140, status: .wrapped, recipient: chris, event: holidays),
+            Gift(title: "Peppermint Bark Box", sortOrder: 6, price: 35, status: .acquired, recipient: chris, event: holidays),
+            Gift(title: "Snow Boots", sortOrder: 7, price: 175, status: .idea, recipient: chris, event: holidays),
 
-            Gift(title: "Noise Cancelling Headphones", sortOrder: 7, price: 349, status: .inTransit, recipient: nicholas, event: holidays),
-            Gift(title: "Desk Lamp", sortOrder: 8, price: 80, status: .acquired, recipient: nicholas, event: holidays),
-            Gift(title: "Cast Iron Skillet", sortOrder: 9, price: 45, status: .idea, recipient: nicholas, event: holidays),
+            Gift(title: "Snowboard", sortOrder: 8, price: 349, status: .inTransit, recipient: nicholas, event: holidays),
+            Gift(title: "Advent Calendar", sortOrder: 9, price: 80, status: .acquired, recipient: nicholas, event: holidays),
+            Gift(title: "Hot Cocoa Set", sortOrder: 10, price: 45, status: .idea, recipient: nicholas, event: holidays),
 
-            Gift(title: "Watercolour Set", sortOrder: 10, price: 60, status: .wrapped, recipient: amara, event: holidays),
-            Gift(title: "Weighted Blanket", sortOrder: 11, price: 95, status: .idea, recipient: amara, event: holidays),
-
-            Gift(title: "LEGO Space Station", sortOrder: 12, price: 120, status: .acquired, recipient: theo, event: holidays),
-            Gift(title: "Telescope", sortOrder: 13, price: 210, status: .idea, recipient: theo, event: holidays),
+            Gift(title: "Ornament Set", sortOrder: 11, price: 60, status: .wrapped, recipient: holly, event: holidays),
+            Gift(title: "Cashmere Scarf", sortOrder: 12, price: 85, status: .acquired, recipient: holly, event: holidays),
+            Gift(title: "Fleece Blanket", sortOrder: 13, price: 95, status: .idea, recipient: holly, event: holidays),
 
             // The Birthday list carries two of the four shots, so it is stocked as deeply as the
             // holiday one. The featured gift has notes because the details shot is taken on it.
-            Gift(title: featuredGiftTitle, sortOrder: 14, price: 249, notes: "Matte black, with the built-in burr grinder.", status: .acquired, recipient: noelle, event: birthday),
-            Gift(title: "Running Shoes", sortOrder: 15, price: 150, status: .inTransit, recipient: noelle, event: birthday),
-            Gift(title: "Concert Tickets", sortOrder: 16, price: 220, status: .idea, recipient: noelle, event: birthday),
+            Gift(title: featuredGiftTitle, sortOrder: 14, price: 249, notes: "Matte black, with the built-in burr grinder.", status: .acquired, recipient: maya, event: birthday),
+            Gift(title: "Running Shoes", sortOrder: 15, price: 150, status: .inTransit, recipient: maya, event: birthday),
+            Gift(title: "Concert Tickets", sortOrder: 16, price: 220, status: .idea, recipient: maya, event: birthday),
 
-            Gift(title: "Whisky Tasting Set", sortOrder: 17, price: 110, status: .wrapped, recipient: chris, event: birthday),
-            Gift(title: "Cookbook", sortOrder: 18, price: 40, status: .acquired, recipient: chris, event: birthday),
-            Gift(title: "Leather Wallet", sortOrder: 19, price: 85, status: .idea, recipient: chris, event: birthday),
+            Gift(title: "Chef's Knife", sortOrder: 17, price: 110, status: .wrapped, recipient: daniel, event: birthday),
+            Gift(title: "Cookbook", sortOrder: 18, price: 40, status: .acquired, recipient: daniel, event: birthday),
+            Gift(title: "Leather Wallet", sortOrder: 19, price: 85, status: .idea, recipient: daniel, event: birthday),
 
-            Gift(title: "Bluetooth Speaker", sortOrder: 20, price: 120, status: .acquired, recipient: nicholas, event: birthday),
-            Gift(title: "Sketchbook Set", sortOrder: 21, price: 45, status: .idea, recipient: amara, event: birthday),
-            Gift(title: "Board Game", sortOrder: 22, price: 55, status: .idea, recipient: theo, event: birthday),
+            Gift(title: "Watercolour Set", sortOrder: 20, price: 60, status: .wrapped, recipient: amara, event: birthday),
+            Gift(title: "Bluetooth Speaker", sortOrder: 21, price: 120, status: .acquired, recipient: amara, event: birthday),
+            Gift(title: "Sketchbook Set", sortOrder: 22, price: 45, status: .idea, recipient: amara, event: birthday),
+
+            Gift(title: "LEGO Space Station", sortOrder: 23, price: 120, status: .acquired, recipient: theo, event: birthday),
+            Gift(title: "Telescope", sortOrder: 24, price: 210, status: .idea, recipient: theo, event: birthday),
+            Gift(title: "Board Game", sortOrder: 25, price: 55, status: .idea, recipient: theo, event: birthday),
 
             // The wishlist tab reads these, and the Shopping List deliberately excludes them.
-            Gift(title: "Mechanical Keyboard", sortOrder: 23, price: 165, status: .idea, recipient: me, event: holidays),
-            Gift(title: "Espresso Grinder", sortOrder: 24, price: 230, status: .idea, recipient: me, event: holidays),
-            Gift(title: "Linen Sheets", sortOrder: 25, price: 120, status: .idea, recipient: me, event: holidays),
-            Gift(title: "Trail Backpack", sortOrder: 26, price: 145, status: .idea, recipient: me, event: birthday),
-            Gift(title: "Fountain Pen", sortOrder: 27, price: 70, status: .idea, recipient: me, event: birthday)
+            Gift(title: "Cashmere Gloves", sortOrder: 26, price: 95, status: .idea, recipient: me, event: holidays),
+            Gift(title: "Gingerbread Kit", sortOrder: 27, price: 55, status: .idea, recipient: me, event: holidays),
+            Gift(title: "Flannel Sheets", sortOrder: 28, price: 120, status: .idea, recipient: me, event: holidays),
+            Gift(title: "Trail Backpack", sortOrder: 29, price: 145, status: .idea, recipient: me, event: birthday),
+            Gift(title: "Fountain Pen", sortOrder: 30, price: 70, status: .idea, recipient: me, event: birthday)
         ]
         for gift in gifts {
             context.insert(gift)

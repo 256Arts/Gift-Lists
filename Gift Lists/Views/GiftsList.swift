@@ -48,7 +48,7 @@ struct GiftsList: View {
     
     var body: some View {
         List {
-            ForEach(recipients.sorted(by: recipientSortBy)) { recipient in
+            ForEach(displayedRecipients) { recipient in
                 #if os(watchOS)
                 Section {
                     ForEach(filterAndSort(recipient.gifts ?? [])) { gift in
@@ -102,22 +102,22 @@ struct GiftsList: View {
             }
             
             #if !os(watchOS)
-            DisclosureGroup {
-                ForEach(filterAndSort(giftsWithoutRecipients)) { gift in
-                    GiftRow(gift: gift, showStatus: true)
+            // Same reason as `displayedRecipients`: an empty bucket is dead space in a screenshot.
+            if !ScreenshotMode.isActive || !filterAndSort(giftsWithoutRecipients).isEmpty {
+                DisclosureGroup {
+                    ForEach(filterAndSort(giftsWithoutRecipients)) { gift in
+                        GiftRow(gift: gift, showStatus: true)
+                    }
+                    
+                    Button("New Gift", systemImage: "plus") {
+                        newGiftSortOrder = (gifts.max(by: { $0.sortOrder ?? 0 < $1.sortOrder ?? 0 })?.sortOrder ?? 0) + 1
+                        showingNewGiftWithoutRecipient = true
+                    }
+                } label: {
+                    Label("Gifts with no Recipient", systemImage: "person.slash.fill")
+                        .fontWeight(.medium)
+                        .foregroundStyle(filterAndSort(giftsWithoutRecipients).isEmpty ? .secondary : .primary)
                 }
-                
-                Button("New Gift", systemImage: "plus") {
-                    newGiftSortOrder = (gifts.max(by: { $0.sortOrder ?? 0 < $1.sortOrder ?? 0 })?.sortOrder ?? 0) + 1
-                    showingNewGiftWithoutRecipient = true
-                }
-                #if os(watchOS)
-                .foregroundStyle(.tint)
-                #endif
-            } label: {
-                Label("Gifts with no Recipient", systemImage: "person.slash.fill")
-                    .fontWeight(.medium)
-                    .foregroundStyle(filterAndSort(giftsWithoutRecipients).isEmpty ? .secondary : .primary)
             }
             #endif
             
@@ -137,6 +137,18 @@ struct GiftsList: View {
         #if !os(macOS)
         .listSectionSpacing(.compact)
         #endif
+    }
+    
+    /// The recipients the list rows, in display order.
+    ///
+    /// Screenshot runs cast a different set of recipients for each event, so that the holiday and
+    /// birthday shots read as different lists; a recipient with nothing for the filtered event is
+    /// dropped there rather than photographed as an empty row. The real app keeps everyone, so that
+    /// filtering to an event still shows who is on the list but has nothing yet.
+    private var displayedRecipients: [Recipient] {
+        let sorted = recipients.sorted(by: recipientSortBy)
+        guard ScreenshotMode.isActive, eventFilter != nil else { return sorted }
+        return sorted.filter { !filterAndSort($0.gifts ?? []).isEmpty }
     }
     
     private var recipientSortBy: RecipientSort {
