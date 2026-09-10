@@ -26,6 +26,11 @@ enum ScreenshotMode {
     static let birthdayRecipientNames = ["Maya", "Daniel"]
     /// Sits on Maya's Birthday list, which is what the details shot is taken over.
     static let featuredGiftTitle = "Espresso Machine"
+    /// The watch takes its details shot on a different gift. Its list cannot be filtered to an event
+    /// — watchOS draws no affordance for the title menu the other platforms filter from — so the
+    /// walk photographs the list the user lands on, and the featured gift has to be one already
+    /// visible on it rather than one several screens down under a later recipient.
+    static let watchFeaturedGiftTitle = "Holiday Sweater"
 
     /// A throwaway store holding nothing but the seed.
     ///
@@ -106,7 +111,8 @@ enum ScreenshotMode {
         // The holiday gifts are themed and the birthday ones everyday, so the two list shots read as
         // genuinely different lists rather than one list twice.
         let gifts = [
-            Gift(title: "Holiday Sweater", sortOrder: 1, price: 65, status: .acquired, recipient: noelle, event: holidays),
+            // The watch takes its details shot on this one; see watchFeaturedGiftTitle.
+            Gift(title: watchFeaturedGiftTitle, sortOrder: 1, price: 65, status: .acquired, recipient: noelle, event: holidays),
             Gift(title: "Ice Skates", sortOrder: 2, price: 180, status: .inTransit, recipient: noelle, event: holidays),
             Gift(title: "Spiced Candle Set", sortOrder: 3, price: 90, status: .idea, recipient: noelle, event: holidays),
             Gift(title: "iPad", sortOrder: 4, price: 349, status: .idea, recipient: noelle, event: holidays),

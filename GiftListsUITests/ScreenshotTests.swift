@@ -23,6 +23,17 @@ final class ScreenshotTests: XCTestCase {
         XCTAssertTrue(waitForControl("Recipient.\(Self.holidayRecipients[0])", timeout: 30).exists,
                       "seeded content never appeared")
 
+        #if os(watchOS)
+        // The watch app is one unfilterable list: there is no tab bar, and watchOS draws no
+        // affordance for the `.toolbarTitleMenu` the other platforms pick an event from — tapping
+        // the title there does nothing at all. So its walk is the list the user actually lands on
+        // plus the details sheet, and it takes neither the event wallpaper nor the Shopping List.
+        settle()
+        capture("01-gifts")
+
+        openFeaturedGift()
+        capture("02-gift-details")
+        #else
         // The wallpaper — and, on the holidays, the countdown — only appears once the list is
         // filtered to an event, so every list shot is taken filtered.
         selectEvent("Holidays", expanding: Self.holidayRecipients)
@@ -53,6 +64,7 @@ final class ScreenshotTests: XCTestCase {
         activate(waitForControl("Shopping List"), "Shopping List tab")
         settle()
         capture("04-shopping")
+        #endif
     }
 
     // MARK: - Driving
@@ -93,9 +105,15 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
-    /// Opens the details for the gift the details shot is taken on.
+    /// Opens the details for the gift the details shot is taken on. The watch features a different
+    /// one — see `ScreenshotMode.watchFeaturedGiftTitle` — because its list cannot be filtered down
+    /// to the event the usual featured gift sits under.
     private func openFeaturedGift() {
+        #if os(watchOS)
+        activate(waitForControl("Gift.Holiday Sweater"), "the featured gift")
+        #else
         activate(waitForControl("Gift.Espresso Machine"), "the featured gift")
+        #endif
         settle()
     }
 

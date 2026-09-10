@@ -26,6 +26,13 @@
 			remoteGlobalIDString = 1B08D6622926EB9D00B7038A;
 			remoteInfo = "Gift Lists";
 		};
+		1BAA000300000000000000B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B08D65B2926EB9D00B7038A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1B6B66FC2A6F45E60067EFD6;
+			remoteInfo = "Gift Lists Watch App";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +50,7 @@
 /* Begin PBXFileReference section */
 		1B08D6632926EB9D00B7038A /* Gift Lists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gift Lists.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B6B66FD2A6F45E60067EFD6 /* Gift Lists Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gift Lists Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BAA000300000000000000B2 /* GiftListsWatchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GiftListsWatchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BAA000200000000000000A2 /* GiftListsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GiftListsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -125,6 +133,13 @@
 			files = (
 			);
 		};
+		1BAA000300000000000000B5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -145,6 +160,7 @@
 				1B08D6632926EB9D00B7038A /* Gift Lists.app */,
 				1B6B66FD2A6F45E60067EFD6 /* Gift Lists Watch App.app */,
 				1BAA000200000000000000A2 /* GiftListsUITests.xctest */,
+				1BAA000300000000000000B2 /* GiftListsWatchUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -221,6 +237,27 @@
 			productReference = 1BAA000200000000000000A2 /* GiftListsUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		1BAA000300000000000000B1 /* GiftListsWatchUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BAA000300000000000000BB /* Build configuration list for PBXNativeTarget "GiftListsWatchUITests" */;
+			buildPhases = (
+				1BAA000300000000000000B4 /* Sources */,
+				1BAA000300000000000000B5 /* Frameworks */,
+				1BAA000300000000000000B6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1BAA000300000000000000B8 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1BAA000200000000000000A3 /* GiftListsUITests */,
+			);
+			name = GiftListsWatchUITests;
+			productName = GiftListsWatchUITests;
+			productReference = 1BAA000300000000000000B2 /* GiftListsWatchUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -261,6 +298,7 @@
 				1B08D6622926EB9D00B7038A /* Gift Lists */,
 				1B6B66FC2A6F45E60067EFD6 /* Gift Lists Watch App */,
 				1BAA000200000000000000A1 /* GiftListsUITests */,
+				1BAA000300000000000000B1 /* GiftListsWatchUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -281,6 +319,13 @@
 			files = (
 			);
 		};
+		1BAA000300000000000000B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -299,6 +344,13 @@
 			files = (
 			);
 		};
+		1BAA000300000000000000B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -312,6 +364,11 @@
 			isa = PBXTargetDependency;
 			target = 1B08D6622926EB9D00B7038A /* Gift Lists */;
 			targetProxy = 1BAA000200000000000000A7 /* PBXContainerItemProxy */;
+		};
+		1BAA000300000000000000B8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1B6B66FC2A6F45E60067EFD6 /* Gift Lists Watch App */;
+			targetProxy = 1BAA000300000000000000B7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -658,6 +715,49 @@
 			};
 			name = Release;
 		};
+		1BAA000300000000000000B9 /* Debug configuration for PBXNativeTarget "GiftListsWatchUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_WKApplication = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaydenirwin.holidaygiftslist.watchuitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Gift Lists Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+			};
+			name = Debug;
+		};
+		1BAA000300000000000000BA /* Release configuration for PBXNativeTarget "GiftListsWatchUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_WKApplication = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaydenirwin.holidaygiftslist.watchuitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Gift Lists Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -690,6 +790,14 @@
 			buildConfigurations = (
 				1BAA000200000000000000A9 /* Debug configuration for PBXNativeTarget "GiftListsUITests" */,
 				1BAA000200000000000000AA /* Release configuration for PBXNativeTarget "GiftListsUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		1BAA000300000000000000BB /* Build configuration list for PBXNativeTarget "GiftListsWatchUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BAA000300000000000000B9 /* Debug configuration for PBXNativeTarget "GiftListsWatchUITests" */,
+				1BAA000300000000000000BA /* Release configuration for PBXNativeTarget "GiftListsWatchUITests" */,
 			);
 			defaultConfigurationName = Release;
 		};

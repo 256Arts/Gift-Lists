@@ -8,7 +8,15 @@ Gift Lists (bundle id `com.jaydenirwin.holidaygiftslist`, internally "Holiday Gi
 
 ## Build & Run
 
-This is an Xcode project (`Gift Lists.xcodeproj`); there is no test target. Schemes: `Gift Lists` (main app) and `Gift Lists Watch App`. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
+This is an Xcode project (`Gift Lists.xcodeproj`); there are no unit tests. Schemes: `Gift Lists` (main app), `Gift Lists Watch App`, and the two screenshot schemes below. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
+
+## App Store screenshots
+
+`screenshots` (in `Repos/Scripts`, configured by `.screenshots.conf`) drives every platform. The walk itself is one UI test — `GiftListsUITests/ScreenshotTests.swift` — branching per platform, launched with `-screenshotMode` so the app seeds `ScreenshotMode.container` instead of the real store.
+
+Two test targets share that one source folder, because xcodebuild resolves a UI test bundle's platform from the app it is bound to (`TEST_TARGET_NAME`): `GiftListsUITests` (scheme `Screenshots`, bound to the iOS/macOS/visionOS app) and `GiftListsWatchUITests` (scheme `Screenshots Watch`, bound to the watch app). Point a new platform at the target that already matches it rather than adding watchOS to the iOS bundle — that combination installs the iOS runner on the watch and fails preflight.
+
+watchOS quirks, all handled in the test's `#if os(watchOS)` branch: the list cannot be filtered to an event (watchOS draws no affordance for `.toolbarTitleMenu`), so there is no wallpaper shot; there is no Shopping List tab; and `simctl status_bar override` is unsupported, so watch shots carry the real clock. The watch runner also must not carry the unsandboxed entitlement the Mac one does — an `app-sandbox` key there fails launch preflight.
 
 ## Architecture
 
@@ -18,7 +26,7 @@ This is an Xcode project (`Gift Lists.xcodeproj`); there is no test target. Sche
 - `Recipient` uses the sentinel name `"<Me>"` (see `Recipient.userName` / `isMe`) to represent the user's own wishlist. The "My Wishlist" tab filters on this. Birthday-related computed properties are `@Transient`.
 - **All model properties are optional.** This is a SwiftData lightweight-migration requirement — preserve it when adding properties, and handle nil throughout (the existing code uses `??` defaults extensively).
 
-**Model container selection is environment-dependent**: the simulator (and macOS DEBUG) loads `previewContainer` (in-memory, seeded with sample data from `Preview Content/PreviewContainer.swift`), while real devices use a persistent CloudKit-backed container. The iOS/macOS/visionOS app routes this through one accessor — `sharedModelContainer` (`App Intents/SharedModelContainer.swift`) — so the SwiftUI scene and the App Intents read/write the same store. (`GiftListsWatchApp` still inlines its own container, with a leaner `[Gift, Recipient]` schema.) When changing the model schema, update `PreviewContainer.swift` too or previews/simulator runs will break.
+**Model container selection is environment-dependent**: the simulator (and macOS DEBUG) loads `previewContainer` (in-memory, seeded with sample data from `Preview Content/PreviewContainer.swift`), while real devices use a persistent CloudKit-backed container. The iOS/macOS/visionOS app routes this through one accessor — `sharedModelContainer` (`App Intents/SharedModelContainer.swift`) — so the SwiftUI scene and the App Intents read/write the same store. (`GiftListsWatchApp` still inlines its own container, with a leaner `[Gift, Recipient]` schema; it honours `ScreenshotMode` but is otherwise not routed through `sharedModelContainer`, which is excluded from the watch target.) When changing the model schema, update `PreviewContainer.swift` too or previews/simulator runs will break.
 
 **App Intents power Siri / Spotlight / Shortcuts** (`App Intents/`, main app only — excluded from the watch target via `project.pbxproj` membership exceptions). `Gift`/`Recipient`/`Event` each expose an `AppEntity` + `EntityStringQuery` keyed by a stable `identifier: UUID?` added to the model (legacy nil records are backfilled lazily via `ensuredIdentifier`); `Status` is an `AppEnum`. Action intents (`AddGiftIntent`, `AddRecipientIntent`, `MarkGiftStatusIntent`) run `@MainActor` against `sharedModelContainer.mainContext`; `GiftListsShortcuts` registers the spoken phrases. Keep this code platform-agnostic enough to compile, but it is excluded from watchOS — add new intent files to the watch membership-exception list in the project file.
 
