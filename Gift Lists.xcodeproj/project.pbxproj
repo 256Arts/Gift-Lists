@@ -289,6 +289,7 @@
 			mainGroup = 1B08D65A2926EB9D00B7038A;
 			packageReferences = (
 				1B397A022ED0DD4C000314AE /* XCRemoteSwiftPackageReference "AdmobSwiftUI" */,
+				1B397A0A2ED0DD4C000314AE /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 1B08D6642926EB9D00B7038A /* Products */;
@@ -810,6 +811,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;
+			};
+		};
+		1B397A0A2ED0DD4C000314AE /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
