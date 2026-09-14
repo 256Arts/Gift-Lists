@@ -20,7 +20,7 @@ final class ScreenshotTests: XCTestCase {
         app.launch()
 
         #if os(macOS)
-        openWindowIfRestoredWithout()
+        openWindowIfNeeded()
         #endif
 
         // Waiting on a seeded row before touching anything keeps the walk from beating the store.
@@ -71,8 +71,6 @@ final class ScreenshotTests: XCTestCase {
         #endif
     }
 
-    // MARK: - Driving
-
     #if os(macOS)
     /// Opens a window when the launch came up without one.
     ///
@@ -82,13 +80,15 @@ final class ScreenshotTests: XCTestCase {
     /// runner cannot clear the state from outside — the app is sandboxed, so its saved state lives in
     /// a container the script has no access to — so the walk opens the window itself, with the app's
     /// own New Window.
-    private func openWindowIfRestoredWithout() {
-        guard app.windows.count == 0 else { return }
+    private func openWindowIfNeeded() {
+        if app.windows.firstMatch.waitForExistence(timeout: 10) { return }
         app.typeKey("n", modifierFlags: .command)
         XCTAssertTrue(app.windows.firstMatch.waitForExistence(timeout: 15),
                       "the app launched with no window and ⌘N opened none")
     }
     #endif
+
+    // MARK: - Driving
 
     /// The event the list is currently filtered to, which is also its navigation title's stem.
     private var currentEvent = "All"
