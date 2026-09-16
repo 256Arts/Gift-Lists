@@ -52,15 +52,21 @@
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1B6B66FC2A6F45E60067EFD6"
-               BuildableName = "Gift Lists Watch App.app"
-               BlueprintName = "Gift Lists Watch App"
-               ReferencedContainer = "container:Gift Lists.xcodeproj">
-            </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1B6B66FC2A6F45E60067EFD6"
+            BuildableName = "Gift Lists Watch App.app"
+            ReferencedContainer = "container:Gift Lists.xcodeproj">
+         </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+   </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
    </AnalyzeAction>
