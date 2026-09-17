@@ -11,7 +11,7 @@ let sharedModelContainer: ModelContainer = {
     if ScreenshotMode.isActive {
         return ScreenshotMode.container
     }
-    #if targetEnvironment(simulator) || (os(macOS) && DEBUG)
+    #if (targetEnvironment(simulator) || os(macOS)) && DEBUG
     return previewContainer
     #else
     return try! ModelContainer(for: Gift.self, Recipient.self, Event.self)
