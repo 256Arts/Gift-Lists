@@ -23,9 +23,17 @@ final class ScreenshotTests: XCTestCase {
         openWindowIfNeeded()
         #endif
 
+        checkSeedIsThrowaway()
+
         // Waiting on a seeded row before touching anything keeps the walk from beating the store.
-        XCTAssertTrue(waitForControl("Recipient.\(Self.holidayRecipients[0])", timeout: 30).exists,
-                      "seeded content never appeared")
+        let firstRecipient = waitForControl("Recipient.\(Self.holidayRecipients[0])", timeout: 30)
+        guard firstRecipient.exists else {
+            attach(XCTAttachment(string: app.debugDescription), named: "element-tree")
+            return XCTFail("""
+                never found the first seeded recipient in 30s on \(Self.platform), \(Self.device).
+                The app reported: \(seedStatus)
+                """)
+        }
 
         #if os(watchOS)
         // The watch app is one unfilterable list: there is no tab bar, and watchOS draws no
@@ -69,6 +77,56 @@ final class ScreenshotTests: XCTestCase {
         settle()
         capture("04-shopping")
         #endif
+    }
+
+    // MARK: - The seed
+
+    /// What the app said it seeded, read out of the accessibility tree.
+    ///
+    /// The app hangs `ScreenshotMode.status` on its root view (`.screenshotModeStatus()`). A walk
+    /// that cannot find it is running against a build that has not adopted that modifier, which is
+    /// worth saying plainly rather than reporting as an empty seed.
+    private var seedStatus: String {
+        let label = app.descendants(matching: .any)["ScreenshotMode.Status"]
+        guard label.waitForExistence(timeout: 30) else {
+            return "no ScreenshotMode.Status element — add .screenshotModeStatus() to the app's root view"
+        }
+        // A SwiftUI `Text` reaches XCUITest as the element's *value* on macOS and as its *label* on
+        // iOS, so take whichever is filled in rather than betting on one.
+        if let value = label.value as? String, !value.isEmpty { return value }
+        return label.label
+    }
+
+    /// Stops the walk when the app did not seed the throwaway store.
+    ///
+    /// `ScreenshotMode.seed` refuses to write to a store that is on disk or still synced with
+    /// CloudKit, because a screenshot run that reached the real store writes demo gifts into the
+    /// user's own. The walk that followed would then photograph an empty app and fail on a missing
+    /// row, which says nothing about why. Read the reason instead, before the first shot.
+    private func checkSeedIsThrowaway() {
+        let status = seedStatus
+        print("SCREENSHOT MODE: \(status)")
+        guard status.hasPrefix("ready") else {
+            attach(XCTAttachment(string: app.debugDescription), named: "element-tree")
+            return XCTFail("the app did not seed a throwaway store, so there is nothing to photograph — \(status)")
+        }
+    }
+
+    private static var platform: String {
+        #if os(macOS)
+        "macOS"
+        #elseif os(watchOS)
+        "watchOS"
+        #elseif os(visionOS)
+        "visionOS"
+        #elseif os(iOS)
+        UIDevice.current.userInterfaceIdiom == .pad ? "iPadOS" : "iOS"
+        #endif
+    }
+
+    /// Which simulator this was, for a failure read days after the run's own log is gone.
+    private static var device: String {
+        ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] ?? "this machine"
     }
 
     #if os(macOS)
@@ -171,7 +229,10 @@ final class ScreenshotTests: XCTestCase {
         let title = app.staticTexts.matching(Self.identifierPredicate(identifier)).element(boundBy: 0)
         if !title.waitForExistence(timeout: 15) {
             attach(XCTAttachment(string: app.debugDescription), named: "tree-missing-\(identifier)")
-            return XCTFail("never found \(name)'s row")
+            return XCTFail("""
+                never found \(name)'s row on \(Self.platform), \(Self.device). \
+                The app reported: \(seedStatus)
+                """)
         }
 
         // The triangle carries the generic NSOutlineViewDisclosureButtonKey identifier, so the only
@@ -186,10 +247,13 @@ final class ScreenshotTests: XCTestCase {
             }
             return
         }
-        XCTFail("no disclosure triangle on \(name)'s line")
+        XCTFail("no disclosure triangle on \(name)'s line on \(Self.platform), \(Self.device)")
         #else
         let row = waitForControl(identifier)
-        XCTAssertTrue(row.exists, "never found \(name)'s row")
+        XCTAssertTrue(row.exists, """
+            never found \(name)'s row on \(Self.platform), \(Self.device). \
+            The app reported: \(seedStatus)
+            """)
         if row.images["collapsed"].exists {
             row.tap()
         }
@@ -260,7 +324,10 @@ final class ScreenshotTests: XCTestCase {
         if !element.waitForExistence(timeout: 15) {
             // A walk that dies on a missing element says nothing about why; the tree says everything.
             attach(XCTAttachment(string: app.debugDescription), named: "tree-missing-\(description)")
-            return XCTFail("never found \(description)")
+            return XCTFail("""
+                never found \(description) on \(Self.platform), \(Self.device). \
+                The app reported: \(seedStatus)
+                """)
         }
         #if os(macOS)
         element.click()

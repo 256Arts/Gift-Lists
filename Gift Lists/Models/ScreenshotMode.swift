@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import SwiftUI
 #if os(macOS)
 import AppKit
 #endif
@@ -15,6 +16,26 @@ enum ScreenshotMode {
     /// Whether this launch is a screenshot run. Read by `sharedModelContainer` and `GiftListsApp`.
     static var isActive: Bool {
         ProcessInfo.processInfo.arguments.contains("-screenshotMode")
+    }
+
+    /// Whether the biometric lock should stand aside. Named for the call site rather than reusing
+    /// `isActive` there directly, so `BiometricAuthentication` reads as skipping the gate on purpose
+    /// rather than just branching on screenshot mode.
+    static var bypassesAuthentication: Bool { isActive }
+
+    // MARK: - Saying what happened
+
+    /// What this launch seeded, in one line, for the walk and for the shared runner.
+    ///
+    /// A failed walk otherwise reports only "seeded content never appeared", which is equally true
+    /// of a store that never seeded, a screen that never opened, and an identifier renamed last
+    /// week. The walk reads this out of the accessibility tree before its first shot and prints it
+    /// on any miss, and the fixed prefix makes it greppable in the build log.
+    private(set) static var status = "the seed has not run"
+
+    private static func report(_ line: String) {
+        status = line
+        print("SCREENSHOT MODE: \(line)")
     }
 
     /// The recipients each shot expands, and the gift the details shot opens. Named here because the
@@ -47,6 +68,36 @@ enum ScreenshotMode {
         return container
     }()
 
+    /// Whether `context` is the throwaway store this mode promises, checked before the first insert.
+    ///
+    /// The damage a screenshot run can do is writing demo gifts into the user's own — and by the
+    /// time anybody notices, CloudKit has synced them. So the seed stops at the door rather than
+    /// afterwards, and says which half of the contract failed.
+    @MainActor
+    private static func verify(_ context: ModelContext) -> Bool {
+        let configurations = context.container.configurations
+        let onDisk = configurations.filter { !$0.isStoredInMemoryOnly }
+        guard onDisk.isEmpty else {
+            report("""
+                REFUSED — the container is on disk (\(onDisk.map(\.name).joined(separator: ", "))), \
+                so seeding would write demo gifts into real ones. Build it with \
+                ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none).
+                """)
+            return false
+        }
+        let synced = configurations.filter { $0.cloudKitContainerIdentifier != nil }
+        guard synced.isEmpty else {
+            report("""
+                REFUSED — the container still syncs with CloudKit \
+                (\(synced.compactMap(\.cloudKitContainerIdentifier).joined(separator: ", "))), so the \
+                real account's gifts would arrive in the store being photographed. Add \
+                cloudKitDatabase: .none.
+                """)
+            return false
+        }
+        return true
+    }
+
     private static let calendar = Calendar(identifier: .gregorian)
 
     private static func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
@@ -78,6 +129,8 @@ enum ScreenshotMode {
     /// otherwise create them a second later and make the first shots a race.
     @MainActor
     static func seed(_ context: ModelContext) {
+        guard verify(context) else { return }
+
         let birthday = Event(name: "Birthday", date: .distantPast, specialCase: .birthday)
         let holidays = Event(name: "Holidays", date: date(2026, 12, 25), specialCase: .holidays)
         for event in [birthday, holidays] {
@@ -101,7 +154,8 @@ enum ScreenshotMode {
         let amara = Recipient(name: "Amara", sortOrder: 6, birthday: upcomingBirthday(in: 145, bornIn: 2001), spendGoal: 150)
         let theo = Recipient(name: "Theo", sortOrder: 7, birthday: upcomingBirthday(in: 233, bornIn: 2015))
         let me = Recipient(name: Recipient.userName, sortOrder: -1)
-        for recipient in [noelle, chris, nicholas, holly, maya, daniel, amara, theo, me] {
+        let recipients = [noelle, chris, nicholas, holly, maya, daniel, amara, theo, me]
+        for recipient in recipients {
             context.insert(recipient)
         }
 
@@ -156,6 +210,32 @@ enum ScreenshotMode {
         ]
         for gift in gifts {
             context.insert(gift)
+        }
+        report("ready — in-memory store, no CloudKit; seeded \(recipients.count) recipients, \(gifts.count) gifts")
+    }
+}
+
+extension View {
+
+    /// Carries `ScreenshotMode.status` into the accessibility tree, where the walk reads it.
+    ///
+    /// Nothing on a normal launch; on a screenshot run, a one-point transparent label — present to
+    /// XCUITest, invisible in the shot. It is how the walk can tell a seed that never ran from a
+    /// screen that never opened, neither of which the app can report any other way: a simulator
+    /// app's `print` does not reach the build log, and there is no file path both the app and the
+    /// runner can write.
+    @ViewBuilder
+    func screenshotModeStatus() -> some View {
+        if ScreenshotMode.isActive {
+            overlay(alignment: .topLeading) {
+                Text(ScreenshotMode.status)
+                    .font(.system(size: 1))
+                    .opacity(0.001)
+                    .accessibilityIdentifier("ScreenshotMode.Status")
+                    .allowsHitTesting(false)
+            }
+        } else {
+            self
         }
     }
 }

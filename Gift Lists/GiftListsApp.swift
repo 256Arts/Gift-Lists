@@ -66,6 +66,7 @@ struct GiftListsApp: App {
                         showingEvent = true
                     }
                 }
+                .screenshotModeStatus()
         }
         #if os(macOS)
         .defaultSize(CGSize(width: 600, height: 600))

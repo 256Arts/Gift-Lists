@@ -8,6 +8,7 @@ struct GiftListsWatchApp: App {
             NavigationStack {
                 GiftsListTab()
             }
+            .screenshotModeStatus()
         }
         .modelContainer(modelContainer)
     }
