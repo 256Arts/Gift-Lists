@@ -106,3 +106,38 @@ extension [Gift] {
         })
     }
 }
+
+extension Set<Status> {
+    
+    /// The statuses as a comma separated list of raw values, so a set can live in `@AppStorage`.
+    var storageValue: String {
+        Status.allCases.filter({ contains($0) }).map(\.rawValue).joined(separator: ",")
+    }
+    
+    init(storageValue: String) {
+        self.init(storageValue.split(separator: ",").compactMap({ Status(rawValue: String($0)) }))
+    }
+    
+}
+
+extension Binding<String> {
+    
+    /// Whether the gifts list shows `status`, backed by a stored list of the *hidden* statuses.
+    ///
+    /// Storing what is hidden keeps "given gifts stay out of the way" as the default without
+    /// touching anyone's stored setting, and a status added later shows up on its own.
+    func showsGiftStatus(_ status: Status) -> Binding<Bool> {
+        Binding<Bool> {
+            !Set<Status>(storageValue: wrappedValue).contains(status)
+        } set: { isShown in
+            var hidden = Set<Status>(storageValue: wrappedValue)
+            if isShown {
+                hidden.remove(status)
+            } else {
+                hidden.insert(status)
+            }
+            wrappedValue = hidden.storageValue
+        }
+    }
+    
+}

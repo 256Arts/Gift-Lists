@@ -24,7 +24,6 @@ struct GiftsListTab: View {
     @Query(sort: \Event.name) var events: [Event]
     
     @State var recipientSortByPreference: RecipientSort
-    @State var includeGivenGifts = false
     @State var showingNewGiftWithoutRecipient = false
     @State private var showingManageEvents = false
     #if os(macOS)
@@ -67,7 +66,6 @@ struct GiftsListTab: View {
             #if os(macOS)
             GiftsList(
                 recipientSortByPreference: $recipientSortByPreference,
-                includeGivenGifts: $includeGivenGifts,
                 showingNewGiftWithoutRecipient: $showingNewGiftWithoutRecipient,
                 showingManageEvents: $showingManageEvents,
                 eventFilter: eventFilter,
@@ -82,7 +80,6 @@ struct GiftsListTab: View {
             #else
             GiftsList(
                 recipientSortByPreference: $recipientSortByPreference,
-                includeGivenGifts: $includeGivenGifts,
                 showingNewGiftWithoutRecipient: $showingNewGiftWithoutRecipient,
                 showingManageEvents: $showingManageEvents,
                 eventFilter: $eventFilter,
@@ -350,9 +347,7 @@ struct GiftsListTab: View {
         }
         
         Section {
-            Button(includeGivenGifts ? "Hide Given Gifts" : "Show Given Gifts", systemImage: includeGivenGifts ? "eye.slash" : "eye") {
-                includeGivenGifts.toggle()
-            }
+            StatusFilterMenu()
             
             Picker(selection: $recipientSummaryInfoValue) {
                 ForEach(RecipientSummaryInfo.allCases) { info in

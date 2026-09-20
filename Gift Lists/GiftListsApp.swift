@@ -83,6 +83,8 @@ struct GiftListsApp: App {
                 
                 Toggle("Show Countdown", systemImage: "timer", isOn: $showHolidayCountdown)
                 
+                StatusFilterMenu()
+                
                 Picker("Recipient Shows", systemImage: "person", selection: $recipientSummaryInfoValue) {
                     ForEach(RecipientSummaryInfo.allCases) { info in
                         Text(info.title)

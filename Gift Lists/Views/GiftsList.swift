@@ -8,6 +8,7 @@ struct GiftsList: View {
     
     @AppStorage(UserDefaults.Key.recipientSummaryInfo) private var recipientSummaryInfoValue = RecipientSummaryInfo.defaultInfo.rawValue
     @AppStorage(UserDefaults.Key.recipientSortBy) private var recipientSortByValue = RecipientSort.defaultSort.rawValue
+    @AppStorage(UserDefaults.Key.hiddenGiftStatuses) private var hiddenGiftStatusesValue = Status.given.rawValue
     
     @Environment(\.modelContext) private var modelContext
     
@@ -16,7 +17,6 @@ struct GiftsList: View {
     @Query(sort: \Event.name) var events: [Event]
     
     @Binding var recipientSortByPreference: RecipientSort
-    @Binding var includeGivenGifts: Bool
     @Binding var showingNewGiftWithoutRecipient: Bool
     @Binding var showingManageEvents: Bool
     #if os(macOS)
@@ -160,8 +160,9 @@ struct GiftsList: View {
     }
     
     private func filterAndSort(_ gifts: [Gift]) -> [Gift] {
-        gifts
-            .filter { includeGivenGifts || $0.status != .given }
+        let hiddenStatuses = Set<Status>(storageValue: hiddenGiftStatusesValue)
+        return gifts
+            .filter { !hiddenStatuses.contains($0.status ?? .idea) }
             .filter { eventFilter == nil || eventFilter == $0.event }
             .sorted()
     }

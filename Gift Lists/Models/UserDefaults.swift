@@ -11,6 +11,7 @@ extension UserDefaults {
         static let showHolidayCountdown = "showHolidayCountdown"
         static let recipientSortBy = "recipientSortBy"
         static let giftSortBy = "giftSortBy"
+        static let hiddenGiftStatuses = "hiddenGiftStatuses"
     }
     
 }
