@@ -36,6 +36,22 @@ enum Status: String, Codable, CaseIterable, Identifiable, Sendable {
     
     var id: Self { self }
     
+    /// The colour the status icon carries wherever it appears — the gifts list and the widgets.
+    var color: Color {
+        switch self {
+        case .idea:
+            Color.secondary
+        case .inTransit:
+            Color.red
+        case .acquired:
+            Color.yellow
+        case .wrapped:
+            Color.green
+        case .given:
+            Color.purple
+        }
+    }
+    
     var sortPriority: Int {
         switch self {
         case .idea:
@@ -86,6 +102,27 @@ final class Gift {
         self.event = event
     }
     
+}
+
+extension Gift {
+
+    /// Returns the stable identifier the App Intents and the widgets address a gift by, assigning
+    /// one to legacy records that predate it.
+    @MainActor
+    var ensuredIdentifier: UUID {
+        if let identifier { return identifier }
+        let new = UUID()
+        identifier = new
+        return new
+    }
+
+    @MainActor
+    static func model(for id: UUID, in context: ModelContext) -> Gift? {
+        var descriptor = FetchDescriptor<Gift>(predicate: #Predicate { $0.identifier == id })
+        descriptor.fetchLimit = 1
+        return try? context.fetch(descriptor).first
+    }
+
 }
 
 extension [Gift] {
@@ -140,4 +177,27 @@ extension Binding<String> {
         }
     }
     
+}
+
+extension [Gift] {
+
+    /// The gifts still to buy for other people, in display order.
+    ///
+    /// The Shopping List tab and the Shopping List widget both read this, so the two can't drift
+    /// apart on what counts as "still to buy" — an idea, and not one on the user's own wishlist,
+    /// which is a list of things to be given rather than bought.
+    func shoppingList(for event: Event? = nil) -> [Gift] {
+        filter { gift in
+            gift.status == .idea
+                && gift.recipient?.name != Recipient.userName
+                && (event == nil || gift.event == event)
+        }
+        .sorted()
+    }
+
+    /// The user's own wishlist, in display order.
+    var wishlist: [Gift] {
+        filter { $0.recipient?.name == Recipient.userName }.sorted()
+    }
+
 }

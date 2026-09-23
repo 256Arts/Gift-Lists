@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Gift Lists (bundle id `com.jaydenirwin.holidaygiftslist`, internally "Holiday Gifts List") is a SwiftUI app for tracking gifts, recipients, and gifting events. It is a single Xcode project with two targets: the main multiplatform app (iOS, macOS, visionOS) and a companion watchOS app. There is no Swift Package manifest — dependencies are managed through the Xcode project.
+Gift Lists (bundle id `com.jaydenirwin.holidaygiftslist`, internally "Holiday Gifts List") is a SwiftUI app for tracking gifts, recipients, and gifting events. It is a single Xcode project with three shipping targets: the main multiplatform app (iOS, macOS, visionOS), a companion watchOS app, and a widget extension. There is no Swift Package manifest — dependencies are managed through the Xcode project.
+
+`Gift Lists Shared/` is a synchronized folder compiled into all three — the `@Model` types, their sort/filter extensions, and `GiftListsStore`. Anything a widget needs goes there; everything else stays in `Gift Lists/`.
 
 ## Build & Run
 
@@ -26,9 +28,13 @@ watchOS quirks, all handled in the test's `#if os(watchOS)` branch: the list can
 - `Recipient` uses the sentinel name `"<Me>"` (see `Recipient.userName` / `isMe`) to represent the user's own wishlist. The "My Wishlist" tab filters on this. Birthday-related computed properties are `@Transient`.
 - **All model properties are optional.** This is a SwiftData lightweight-migration requirement — preserve it when adding properties, and handle nil throughout (the existing code uses `??` defaults extensively).
 
+The store itself lives in an App Group container (`GiftListsStore`), because a widget runs in its own process and cannot read the app's own container. The identifier differs per platform — iOS demands a `group.` prefix, macOS the team identifier — so it comes from the `APP_GROUP_IDENTIFIER` build setting in the entitlements and from a matching `#if os(macOS)` in `GiftListsStore`; change both together. A pre-App-Group install's store is copied across on first launch.
+
 **Model container selection is environment-dependent**: the simulator (and macOS DEBUG) loads `previewContainer` (in-memory, seeded with sample data from `Preview Content/PreviewContainer.swift`), while real devices use a persistent CloudKit-backed container. The iOS/macOS/visionOS app routes this through one accessor — `sharedModelContainer` (`App Intents/SharedModelContainer.swift`) — so the SwiftUI scene and the App Intents read/write the same store. (`GiftListsWatchApp` still inlines its own container, with a leaner `[Gift, Recipient]` schema; it honours `ScreenshotMode` but is otherwise not routed through `sharedModelContainer`, which is excluded from the watch target.) When changing the model schema, update `PreviewContainer.swift` too or previews/simulator runs will break.
 
 **App Intents power Siri / Spotlight / Shortcuts** (`App Intents/`, main app only — excluded from the watch target via `project.pbxproj` membership exceptions). `Gift`/`Recipient`/`Event` each expose an `AppEntity` + `EntityStringQuery` keyed by a stable `identifier: UUID?` added to the model (legacy nil records are backfilled lazily via `ensuredIdentifier`); `Status` is an `AppEnum`. Action intents (`AddGiftIntent`, `AddRecipientIntent`, `MarkGiftStatusIntent`) run `@MainActor` against `sharedModelContainer.mainContext`; `GiftListsShortcuts` registers the spoken phrases. Keep this code platform-agnostic enough to compile, but it is excluded from watchOS — add new intent files to the watch membership-exception list in the project file.
+
+**Widgets** (`Gift Lists Widgets/`, iOS/iPadOS/macOS/visionOS Home Screen) show the Shopping List and My Wishlist. Both are the same view — `GiftListWidgetView` — with `GiftListKind` supplying the title, the deep link, and whether rows can be ticked off; the lists themselves come from the `[Gift].shoppingList(for:)` / `.wishlist` extensions the app's own tabs use, so the two cannot drift. Shopping rows carry a `MarkGiftAcquiredIntent` button. Taps deep-link through the `giftlists://` scheme into `MainTab`, handled in `MainTabView`. The app reloads timelines from `WidgetRefresh`, debounced off `ModelContext.didSave`.
 
 **Settings are `@AppStorage`** keyed by string constants centralized in `UserDefaults.Key` (`Models/UserDefaults.swift`). On macOS these are surfaced as menu-bar commands in `GiftListsApp`; add new keys there to keep them in one place.
 

@@ -20,7 +20,7 @@ struct ShoppingList: View {
     @Environment(\.modelContext) private var modelContext
     
     private var giftIdeas: [Gift] {
-        gifts.filter({ $0.status == .idea && $0.recipient?.name != "<Me>" && (eventFilter == nil || $0.event == eventFilter) }).sorted()
+        gifts.shoppingList(for: eventFilter)
     }
     
     var body: some View {
@@ -29,7 +29,7 @@ struct ShoppingList: View {
                 Text("No Gift Ideas").foregroundStyle(.secondary)
             } else {
                 List {
-                    ForEach(giftIdeas.sorted()) { gift in
+                    ForEach(giftIdeas) { gift in
                         ShoppingRow(gift: gift)
                     }
                     

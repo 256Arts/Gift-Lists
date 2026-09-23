@@ -23,38 +23,13 @@ struct GiftRow: View {
             
             if showStatus {
                 Group {
-                    switch gift.status {
-                    case .idea:
-                        gift.status?.icon
-                            .foregroundStyle(.secondary)
+                    if let status = gift.status {
+                        status.icon
+                            .foregroundStyle(status.color)
                             .accessibilityRepresentation {
-                                Text("Idea")
+                                Text(status.title)
                             }
-                    case .inTransit:
-                        gift.status?.icon
-                            .foregroundStyle(Color.red)
-                            .accessibilityRepresentation {
-                                Text("In Transit")
-                            }
-                    case .acquired:
-                        gift.status?.icon
-                            .foregroundStyle(Color.yellow)
-                            .accessibilityRepresentation {
-                                Text("Acquired")
-                            }
-                    case .wrapped:
-                        gift.status?.icon
-                            .foregroundStyle(Color.green)
-                            .accessibilityRepresentation {
-                                Text("Wrapped")
-                            }
-                    case .given:
-                        gift.status?.icon
-                            .foregroundStyle(Color.purple)
-                            .accessibilityRepresentation {
-                                Text("Given")
-                            }
-                    case nil:
+                    } else {
                         Image(systemName: "questionmark.square.dashed")
                             .foregroundStyle(.secondary)
                             .accessibilityRepresentation {

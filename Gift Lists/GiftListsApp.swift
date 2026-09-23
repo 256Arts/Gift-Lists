@@ -56,6 +56,12 @@ struct GiftListsApp: App {
                         .requestTrackingAuthorization()
                     #endif
                 }
+                .task {
+                    // A screenshot run writes to a throwaway store; reloading the widgets off it
+                    // would push demo gifts onto the machine taking the shots.
+                    guard !ScreenshotMode.isActive else { return }
+                    await WidgetRefresh.observeSaves()
+                }
                 .alert("Event Intro", isPresented: $showingEvent) {
                     Button("OK") { }
                 } message: {

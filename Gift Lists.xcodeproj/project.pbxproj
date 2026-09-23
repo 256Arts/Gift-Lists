@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1B6B670A2A6F45E90067EFD6 /* Gift Lists Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1B6B66FD2A6F45E60067EFD6 /* Gift Lists Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1BAA000400000000000000CD /* Gift Lists Widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1BAA000400000000000000C2 /* Gift Lists Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,13 @@
 			remoteGlobalIDString = 1B6B66FC2A6F45E60067EFD6;
 			remoteInfo = "Gift Lists Watch App";
 		};
+		1BAA000400000000000000C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B08D65B2926EB9D00B7038A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BAA000400000000000000C1;
+			remoteInfo = "Gift Lists Widgets";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +52,15 @@
 			);
 			name = "Embed Watch Content";
 		};
+		1BAA000400000000000000CE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1BAA000400000000000000CD /* Gift Lists Widgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +68,7 @@
 		1B6B66FD2A6F45E60067EFD6 /* Gift Lists Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gift Lists Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BAA000300000000000000B2 /* GiftListsWatchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GiftListsWatchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BAA000200000000000000A2 /* GiftListsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GiftListsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BAA000400000000000000C2 /* Gift Lists Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Gift Lists Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -113,6 +131,16 @@
 			path = GiftListsUITests;
 			sourceTree = "<group>";
 		};
+		1BAA000400000000000000CC /* Gift Lists Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Gift Lists Shared";
+			sourceTree = "<group>";
+		};
+		1BAA000400000000000000C3 /* Gift Lists Widgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Gift Lists Widgets";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +166,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1BAA000400000000000000C5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -145,6 +180,8 @@
 			isa = PBXGroup;
 			children = (
 				1B7DF7402E2412820071B353 /* Gift Lists */,
+				1BAA000400000000000000CC /* Gift Lists Shared */,
+				1BAA000400000000000000C3 /* Gift Lists Widgets */,
 				1B7DF7222E2411570071B353 /* Gift Lists Watch App */,
 				1BAA000200000000000000A3 /* GiftListsUITests */,
 				1B397A032ED0DD8A000314AE /* Frameworks */,
@@ -157,6 +194,7 @@
 			children = (
 				1B08D6632926EB9D00B7038A /* Gift Lists.app */,
 				1B6B66FD2A6F45E60067EFD6 /* Gift Lists Watch App.app */,
+				1BAA000400000000000000C2 /* Gift Lists Widgets.appex */,
 				1BAA000200000000000000A2 /* GiftListsUITests.xctest */,
 				1BAA000300000000000000B2 /* GiftListsWatchUITests.xctest */,
 			);
@@ -181,14 +219,17 @@
 				1B08D6602926EB9D00B7038A /* Frameworks */,
 				1B08D6612926EB9D00B7038A /* Resources */,
 				1B6B670B2A6F45E90067EFD6 /* Embed Watch Content */,
+				1BAA000400000000000000CE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				1B6B67092A6F45E90067EFD6 /* PBXTargetDependency */,
+				1BAA000400000000000000C8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				1B7DF7402E2412820071B353 /* Gift Lists */,
+				1BAA000400000000000000CC /* Gift Lists Shared */,
 			);
 			name = "Gift Lists";
 			productName = "Holiday Gifts List";
@@ -208,6 +249,7 @@
 			fileSystemSynchronizedGroups = (
 				1B7DF7222E2411570071B353 /* Gift Lists Watch App */,
 				1B7DF7402E2412820071B353 /* Gift Lists */,
+				1BAA000400000000000000CC /* Gift Lists Shared */,
 			);
 			name = "Gift Lists Watch App";
 			productName = "Holiday Gifts List Watch Watch App";
@@ -256,6 +298,27 @@
 			productReference = 1BAA000300000000000000B2 /* GiftListsWatchUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		1BAA000400000000000000C1 /* Gift Lists Widgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BAA000400000000000000CB /* Build configuration list for PBXNativeTarget "Gift Lists Widgets" */;
+			buildPhases = (
+				1BAA000400000000000000C4 /* Sources */,
+				1BAA000400000000000000C5 /* Frameworks */,
+				1BAA000400000000000000C6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1BAA000400000000000000C3 /* Gift Lists Widgets */,
+				1BAA000400000000000000CC /* Gift Lists Shared */,
+			);
+			name = "Gift Lists Widgets";
+			productName = "Gift Lists Widgets";
+			productReference = 1BAA000400000000000000C2 /* Gift Lists Widgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -291,6 +354,7 @@
 			projectRoot = "";
 			targets = (
 				1B08D6622926EB9D00B7038A /* Gift Lists */,
+				1BAA000400000000000000C1 /* Gift Lists Widgets */,
 				1B6B66FC2A6F45E60067EFD6 /* Gift Lists Watch App */,
 				1BAA000200000000000000A1 /* GiftListsUITests */,
 				1BAA000300000000000000B1 /* GiftListsWatchUITests */,
@@ -315,6 +379,13 @@
 			);
 		};
 		1BAA000300000000000000B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1BAA000400000000000000C6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -346,6 +417,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1BAA000400000000000000C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -365,12 +443,19 @@
 			target = 1B6B66FC2A6F45E60067EFD6 /* Gift Lists Watch App */;
 			targetProxy = 1BAA000300000000000000B7 /* PBXContainerItemProxy */;
 		};
+		1BAA000400000000000000C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1BAA000400000000000000C1 /* Gift Lists Widgets */;
+			targetProxy = 1BAA000400000000000000C7 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1B08D6702926EB9F00B7038A /* Debug configuration for PBXProject "Gift Lists" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_GROUP_IDENTIFIER = group.com.jaydenirwin.holidaygiftslist;
+				"APP_GROUP_IDENTIFIER[sdk=macosx*]" = "$(DEVELOPMENT_TEAM).group.com.jaydenirwin.holidaygiftslist";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -435,6 +520,8 @@
 		1B08D6712926EB9F00B7038A /* Release configuration for PBXProject "Gift Lists" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_GROUP_IDENTIFIER = group.com.jaydenirwin.holidaygiftslist;
+				"APP_GROUP_IDENTIFIER[sdk=macosx*]" = "$(DEVELOPMENT_TEAM).group.com.jaydenirwin.holidaygiftslist";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -753,6 +840,72 @@
 			};
 			name = Release;
 		};
+		1BAA000400000000000000C9 /* Debug configuration for PBXNativeTarget "Gift Lists Widgets" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gift Lists Widgets/Gift Lists Widgets.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 16;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Gift-Lists-Widgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Gift Lists";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaydenirwin.holidaygiftslist.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		1BAA000400000000000000CA /* Release configuration for PBXNativeTarget "Gift Lists Widgets" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gift Lists Widgets/Gift Lists Widgets.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 16;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Gift-Lists-Widgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Gift Lists";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaydenirwin.holidaygiftslist.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -793,6 +946,14 @@
 			buildConfigurations = (
 				1BAA000300000000000000B9 /* Debug configuration for PBXNativeTarget "GiftListsWatchUITests" */,
 				1BAA000300000000000000BA /* Release configuration for PBXNativeTarget "GiftListsWatchUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		1BAA000400000000000000CB /* Build configuration list for PBXNativeTarget "Gift Lists Widgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BAA000400000000000000C9 /* Debug configuration for PBXNativeTarget "Gift Lists Widgets" */,
+				1BAA000400000000000000CA /* Release configuration for PBXNativeTarget "Gift Lists Widgets" */,
 			);
 			defaultConfigurationName = Release;
 		};

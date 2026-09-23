@@ -59,24 +59,6 @@ extension GiftEntity: Transferable {
     }
 }
 
-extension Gift {
-    /// Returns the stable App Intents identifier, assigning one to legacy records that predate it.
-    @MainActor
-    var ensuredIdentifier: UUID {
-        if let identifier { return identifier }
-        let new = UUID()
-        identifier = new
-        return new
-    }
-
-    @MainActor
-    static func model(for id: UUID, in context: ModelContext) -> Gift? {
-        var descriptor = FetchDescriptor<Gift>(predicate: #Predicate { $0.identifier == id })
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
-    }
-}
-
 struct GiftEntityQuery: EntityStringQuery {
 
     @MainActor
