@@ -1,0 +1,189 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Add a gift to ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Ein Geschenk zu ${applicationName} hinzufügen",
+              "Ein Geschenk in ${applicationName} hinzufügen",
+              "Neues Geschenk in ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Add a gift to ${applicationName}",
+              "Add a gift in ${applicationName}",
+              "New gift in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Añadir un regalo a ${applicationName}",
+              "Añadir un regalo en ${applicationName}",
+              "Nuevo regalo en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Ajouter un cadeau à ${applicationName}",
+              "Ajouter un cadeau dans ${applicationName}",
+              "Nouveau cadeau dans ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "${applicationName}に贈り物を追加",
+              "${applicationName}でギフトを追加",
+              "${applicationName}で新しいギフト"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "在${applicationName}中添加礼物",
+              "在${applicationName}添加礼物",
+              "在${applicationName}中新增礼物"
+            ]
+          }
+        }
+      }
+    },
+    "Add a recipient to ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Einen Empfänger zu ${applicationName} hinzufügen",
+              "Eine Person zu ${applicationName} hinzufügen"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Add a recipient to ${applicationName}",
+              "Add a person to ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Añadir un destinatario a ${applicationName}",
+              "Añadir una persona a ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Ajouter un destinataire à ${applicationName}",
+              "Ajouter une personne à ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "${applicationName}に受取人を追加",
+              "${applicationName}に人を追加"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "在${applicationName}中添加收礼人",
+              "在${applicationName}中添加一个人"
+            ]
+          }
+        }
+      }
+    },
+    "Change a gift's status in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Den Status eines Geschenks in ${applicationName} ändern",
+              "Ein Geschenk in ${applicationName} aktualisieren"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Change a gift's status in ${applicationName}",
+              "Update a gift in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Cambiar el estado de un regalo en ${applicationName}",
+              "Actualizar un regalo en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "Modifier le statut d'un cadeau dans ${applicationName}",
+              "Mettre à jour un cadeau dans ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "${applicationName}でギフトのステータスを変更",
+              "${applicationName}でギフトを更新"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "machine_translated",
+            "values" : [
+              "在${applicationName}中更改礼物状态",
+              "在${applicationName}中更新礼物"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

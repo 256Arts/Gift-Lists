@@ -21,7 +21,7 @@ struct StatusFilterMenu: View {
             ForEach(Status.allCases) { status in
                 Toggle(isOn: $hiddenGiftStatusesValue.showsGiftStatus(status)) {
                     Label {
-                        Text(status.title)
+                        Text(status.localizedTitle)
                     } icon: {
                         status.icon
                     }

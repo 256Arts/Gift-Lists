@@ -351,13 +351,13 @@ struct GiftsListTab: View {
             
             Picker(selection: $recipientSummaryInfoValue) {
                 ForEach(RecipientSummaryInfo.allCases) { info in
-                    Text(info.title)
+                    Text(info.localizedTitle)
                         .tag(info.rawValue)
                 }
             } label: {
                 Text("Recipient Shows")
                 if let info = RecipientSummaryInfo(rawValue: recipientSummaryInfoValue) {
-                    Text(info.title)
+                    Text(info.localizedTitle)
                 }
                 Image(systemName: "person")
             }
@@ -365,12 +365,12 @@ struct GiftsListTab: View {
             if eventFilter?.specialCase != .birthday {
                 Picker(selection: $recipientSortByPreference) {
                     ForEach(RecipientSort.allCases) { sort in
-                        Text(sort.title)
+                        Text(sort.localizedTitle)
                             .tag(sort)
                     }
                 } label: {
                     Text("Sort By")
-                    Text(recipientSortByPreference.title)
+                    Text(recipientSortByPreference.localizedTitle)
                     Image(systemName: "arrow.up.arrow.down")
                 }
             }

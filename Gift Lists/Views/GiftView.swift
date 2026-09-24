@@ -45,7 +45,7 @@ struct GiftView: View {
                 Picker("Status", selection: $status) {
                     ForEach(Status.allCases) { status in
                         Label {
-                            Text(status.title)
+                            Text(status.localizedTitle)
                         } icon: {
                             status.icon
                         }

@@ -93,14 +93,14 @@ struct GiftListsApp: App {
                 
                 Picker("Recipient Shows", systemImage: "person", selection: $recipientSummaryInfoValue) {
                     ForEach(RecipientSummaryInfo.allCases) { info in
-                        Text(info.title)
+                        Text(info.localizedTitle)
                             .tag(info.rawValue)
                     }
                 }
                 
                 Picker("Sort By", systemImage: "arrow.up.arrow.down", selection: $recipientSortByValue) {
                     ForEach(RecipientSort.allCases) { sort in
-                        Text(sort.title)
+                        Text(sort.localizedTitle)
                             .tag(sort.rawValue)
                     }
                 }

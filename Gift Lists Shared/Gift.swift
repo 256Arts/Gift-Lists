@@ -18,7 +18,22 @@ enum Status: String, Codable, CaseIterable, Identifiable, Sendable {
             "Given"
         }
     }
-    
+
+    var localizedTitle: LocalizedStringResource {
+        switch self {
+        case .idea:
+            "Idea"
+        case .inTransit:
+            "In Transit"
+        case .acquired:
+            "Acquired"
+        case .wrapped:
+            "Wrapped"
+        case .given:
+            "Given"
+        }
+    }
+
     var icon: Image {
         switch self {
         case .idea:

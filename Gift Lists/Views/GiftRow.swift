@@ -27,7 +27,7 @@ struct GiftRow: View {
                         status.icon
                             .foregroundStyle(status.color)
                             .accessibilityRepresentation {
-                                Text(status.title)
+                                Text(status.localizedTitle)
                             }
                     } else {
                         Image(systemName: "questionmark.square.dashed")

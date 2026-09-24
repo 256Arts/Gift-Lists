@@ -73,6 +73,16 @@ enum RecipientSort: String, CaseIterable, Identifiable {
             "Created Date"
         }
     }
+    var localizedTitle: LocalizedStringResource {
+        switch self {
+        case .alphabetical:
+            "Alphabetical"
+        case .nearestBirthday:
+            "Nearest Birthday"
+        case .customOrder:
+            "Created Date"
+        }
+    }
 }
 
 enum RecipientSummaryInfo: String, CaseIterable, Identifiable {
@@ -83,6 +93,9 @@ enum RecipientSummaryInfo: String, CaseIterable, Identifiable {
     
     var id: Self { self }
     var title: String {
+        self == .totalSpent ? "Total Spent" : "Number of Gifts"
+    }
+    var localizedTitle: LocalizedStringResource {
         self == .totalSpent ? "Total Spent" : "Number of Gifts"
     }
 }
