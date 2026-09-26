@@ -97,14 +97,20 @@ final class Gift {
     var status: Status?
     
     var amazonURL: URL? {
-        guard let query = title?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return nil }
-        
-        let domain = switch Locale.autoupdatingCurrent.region?.identifier {
-        case "CA": "ca"
-        default: "com"
-        }
-        return URL(string: "https://www.amazon.\(domain)/s?k=\(query)")!
+        guard let title else { return nil }
+
+        let domain = Self.amazonDomains[Locale.autoupdatingCurrent.region?.identifier ?? ""] ?? "com"
+        return URL(string: "https://www.amazon.\(domain)/s")!.appending(queryItems: [URLQueryItem(name: "k", value: title)])
     }
+
+    /// Amazon storefront TLD per region. Regions without their own store fall back to `.com`.
+    private static let amazonDomains: [String: String] = [
+        "AE": "ae", "AT": "de", "AU": "com.au", "BE": "com.be", "BR": "com.br",
+        "CA": "ca", "DE": "de", "EG": "eg", "ES": "es", "FR": "fr",
+        "GB": "co.uk", "IE": "co.uk", "IN": "in", "IT": "it", "JP": "co.jp",
+        "MX": "com.mx", "NL": "nl", "PL": "pl", "SA": "sa", "SE": "se",
+        "SG": "sg", "TR": "com.tr",
+    ]
     
     init(title: String, sortOrder: Int, price: Double, notes: String? = nil, status: Status = .idea, recipient: Recipient? = nil, event: Event? = nil) {
         self.identifier = UUID()
