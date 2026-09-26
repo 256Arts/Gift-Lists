@@ -36,6 +36,7 @@ struct GiftsListTab: View {
     @State var newRecipientSortOrder = 0
     @State var editingRecipient: Recipient?
     @State var recipientName = ""
+    @State private var searchText = ""
     
     /// Recipient which will be added to a new gift the user is creating
     @State var newGiftRecipient: Recipient?
@@ -75,7 +76,8 @@ struct GiftsListTab: View {
                 editingRecipient: $editingRecipient,
                 recipientName: $recipientName,
                 newGiftRecipient: $newGiftRecipient,
-                generatingIdeasRecipient: $generatingIdeasRecipient
+                generatingIdeasRecipient: $generatingIdeasRecipient,
+                searchText: searchText
             )
             #else
             GiftsList(
@@ -89,7 +91,8 @@ struct GiftsListTab: View {
                 editingRecipient: $editingRecipient,
                 recipientName: $recipientName,
                 newGiftRecipient: $newGiftRecipient,
-                generatingIdeasRecipient: $generatingIdeasRecipient
+                generatingIdeasRecipient: $generatingIdeasRecipient,
+                searchText: searchText
             )
             #endif
         }
@@ -104,6 +107,7 @@ struct GiftsListTab: View {
         }
         #endif
         .navigationTitle(title)
+        .searchable(text: $searchText, prompt: "Gifts, Notes, and Recipients")
         #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarTitleMenu {

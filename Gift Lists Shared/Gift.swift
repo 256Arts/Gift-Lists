@@ -140,6 +140,21 @@ extension Gift {
 
 }
 
+extension Gift {
+
+    /// Whether a search query appears in the gift's title, its notes, or its recipient's name.
+    ///
+    /// The user's own `"<Me>"` sentinel is never matched, so searching "me" doesn't return the
+    /// whole wishlist.
+    func matches(searchText: String) -> Bool {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return true }
+        let recipientName = recipient?.isMe == false ? recipient?.name : nil
+        return [title, notes, recipientName].contains { $0?.localizedStandardContains(query) == true }
+    }
+
+}
+
 extension [Gift] {
     func sorted() -> [Gift] {
         sorted(by: {
@@ -208,6 +223,11 @@ extension [Gift] {
                 && (event == nil || gift.event == event)
         }
         .sorted()
+    }
+
+    /// The gifts matching a search query, keeping their order. An empty query matches everything.
+    func matching(_ searchText: String) -> [Gift] {
+        filter { $0.matches(searchText: searchText) }
     }
 
     /// The user's own wishlist, in display order.

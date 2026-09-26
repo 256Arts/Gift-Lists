@@ -11,6 +11,7 @@ struct ShoppingList: View {
     
     @State private var eventFilter: Event? = nil
     @State private var showingManageEvents = false
+    @State private var searchText = ""
     
     // Ads
     #if canImport(AdmobSwiftUI)
@@ -20,12 +21,14 @@ struct ShoppingList: View {
     @Environment(\.modelContext) private var modelContext
     
     private var giftIdeas: [Gift] {
-        gifts.shoppingList(for: eventFilter)
+        gifts.shoppingList(for: eventFilter).matching(searchText)
     }
     
     var body: some View {
         Group {
-            if giftIdeas.isEmpty {
+            if giftIdeas.isEmpty, !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            } else if giftIdeas.isEmpty {
                 Text("No Gift Ideas").foregroundStyle(.secondary)
             } else {
                 List {
@@ -49,6 +52,7 @@ struct ShoppingList: View {
             }
         }
         .navigationTitle(title)
+        .searchable(text: $searchText, prompt: "Gifts, Notes, and Recipients")
         #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarTitleMenu {

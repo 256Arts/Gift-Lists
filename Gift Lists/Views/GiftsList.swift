@@ -35,6 +35,14 @@ struct GiftsList: View {
     /// Recipient to generate Apple Intelligence gift ideas for
     @Binding var generatingIdeasRecipient: Recipient?
     
+    let searchText: String
+    
+    /// Groups the user has expanded, keyed by recipient (`nil` for gifts with no recipient).
+    @State private var expandedGroups: Set<PersistentIdentifier?> = []
+    /// Groups the user has collapsed during the current search, which otherwise expands everything
+    /// so matches aren't hidden inside closed groups.
+    @State private var collapsedSearchGroups: Set<PersistentIdentifier?> = []
+    
     // Ads
     #if canImport(AdmobSwiftUI)
     @StateObject private var nativeViewModel = NativeAdViewModel(adUnitID: "ca-app-pub-8282547272443688/2273313611")
@@ -65,7 +73,7 @@ struct GiftsList: View {
                 }
                 #else
                 Section {
-                    DisclosureGroup {
+                    DisclosureGroup(isExpanded: isExpanded(recipient.persistentModelID)) {
                         ForEach(filterAndSort(recipient.gifts ?? [])) { gift in
                             GiftRow(gift: gift, showStatus: true)
                         }
@@ -102,9 +110,10 @@ struct GiftsList: View {
             }
             
             #if !os(watchOS)
-            // Same reason as `displayedRecipients`: an empty bucket is dead space in a screenshot.
-            if !ScreenshotMode.isActive || !filterAndSort(giftsWithoutRecipients).isEmpty {
-                DisclosureGroup {
+            // Same reason as `displayedRecipients`: an empty bucket is dead space in a screenshot, or
+            // in search results.
+            if !(ScreenshotMode.isActive || isSearching) || !filterAndSort(giftsWithoutRecipients).isEmpty {
+                DisclosureGroup(isExpanded: isExpanded(nil)) {
                     ForEach(filterAndSort(giftsWithoutRecipients)) { gift in
                         GiftRow(gift: gift, showStatus: true)
                     }
@@ -137,6 +146,30 @@ struct GiftsList: View {
         #if !os(macOS)
         .listSectionSpacing(.compact)
         #endif
+        .overlay {
+            if isSearching, displayedRecipients.isEmpty, filterAndSort(giftsWithoutRecipients).isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            }
+        }
+        .onChange(of: searchText) {
+            collapsedSearchGroups = []
+        }
+    }
+    
+    private var isSearching: Bool {
+        !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
+    private func isExpanded(_ group: PersistentIdentifier?) -> Binding<Bool> {
+        Binding {
+            isSearching ? !collapsedSearchGroups.contains(group) : expandedGroups.contains(group)
+        } set: { expanded in
+            if isSearching {
+                if expanded { collapsedSearchGroups.remove(group) } else { collapsedSearchGroups.insert(group) }
+            } else {
+                if expanded { expandedGroups.insert(group) } else { expandedGroups.remove(group) }
+            }
+        }
     }
     
     /// The recipients the list rows, in display order.
@@ -144,9 +177,16 @@ struct GiftsList: View {
     /// Screenshot runs cast a different set of recipients for each event, so that the holiday and
     /// birthday shots read as different lists; a recipient with nothing for the filtered event is
     /// dropped there rather than photographed as an empty row. The real app keeps everyone, so that
-    /// filtering to an event still shows who is on the list but has nothing yet.
+    /// filtering to an event still shows who is on the list but has nothing yet — except while
+    /// searching, where only recipients whose name or gifts match are shown.
     private var displayedRecipients: [Recipient] {
         let sorted = recipients.sorted(by: recipientSortBy)
+        if isSearching {
+            return sorted.filter {
+                ($0.name ?? "").localizedStandardContains(searchText.trimmingCharacters(in: .whitespacesAndNewlines))
+                    || !filterAndSort($0.gifts ?? []).isEmpty
+            }
+        }
         guard ScreenshotMode.isActive, eventFilter != nil else { return sorted }
         return sorted.filter { !filterAndSort($0.gifts ?? []).isEmpty }
     }
@@ -164,6 +204,7 @@ struct GiftsList: View {
         return gifts
             .filter { !hiddenStatuses.contains($0.status ?? .idea) }
             .filter { eventFilter == nil || eventFilter == $0.event }
+            .matching(searchText)
             .sorted()
     }
     

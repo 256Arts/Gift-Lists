@@ -12,6 +12,7 @@ struct MyWishlistView: View {
     
     @State var showingNewGift = false
     @State var newGiftSortOrder = 0
+    @State private var searchText = ""
     
     // Ads
     #if canImport(AdmobSwiftUI)
@@ -24,7 +25,7 @@ struct MyWishlistView: View {
     
     var body: some View {
         List {
-            ForEach(me?.gifts?.sorted() ?? []) { gift in
+            ForEach((me?.gifts ?? []).matching(searchText).sorted()) { gift in
                 GiftRow(gift: gift, showStatus: false)
             }
             
@@ -54,6 +55,7 @@ struct MyWishlistView: View {
         }
         .headerProminence(.increased)
         .navigationTitle("My Wishlist")
+        .searchable(text: $searchText, prompt: "Gifts and Notes")
         .sheet(isPresented: $showingNewGift) {
             NavigationStack {
                 NewGiftView(recipient: me, sortOrder: newGiftSortOrder)
