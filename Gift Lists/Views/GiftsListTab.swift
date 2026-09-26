@@ -188,7 +188,7 @@ struct GiftsListTab: View {
         .sheet(item: $generatingIdeasRecipient) { recipient in
             if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *) {
                 NavigationStack {
-                    GiftIdeasView(recipient: recipient)
+                    GiftIdeasView(recipient: recipient, event: eventFilter)
                 }
             }
         }
