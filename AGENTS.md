@@ -10,7 +10,9 @@ Gift Lists (bundle id `com.jaydenirwin.holidaygiftslist`, internally "Holiday Gi
 
 ## Build & Run
 
-This is an Xcode project (`Gift Lists.xcodeproj`); there are no unit tests. Schemes: `Gift Lists` (main app), `Gift Lists Watch App`, and the two screenshot schemes below. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
+This is an Xcode project (`Gift Lists.xcodeproj`). Schemes: `Gift Lists` (main app), `Gift Lists Watch App`, and the two screenshot schemes below. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
+
+Unit tests (Swift Testing) live in `GiftListsTests/`, run by the `Gift Lists` scheme's Test action. The target has no host app — it compiles `Gift Lists Shared` directly and uses an in-memory `ModelContainer` — so cover model logic there: `xcodebuild test -project "Gift Lists.xcodeproj" -scheme "Gift Lists" -destination 'platform=macOS' -only-testing:GiftListsTests`.
 
 ## App Store screenshots
 
