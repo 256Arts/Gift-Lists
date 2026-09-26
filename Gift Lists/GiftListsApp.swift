@@ -4,18 +4,10 @@ import TipKit
 import LocalAuthentication
 #if canImport(AdmobSwiftUI)
 import AdmobSwiftUI
-import AdSupport
-import AppTrackingTransparency
 #endif
 
 @main
 struct GiftListsApp: App {
-    
-    init() {
-        #if canImport(AdmobSwiftUI)
-        AdmobSwiftUI.initialize()
-        #endif
-    }
     
     @AppStorage(UserDefaults.Key.requireAuthenication) private var requireAuthenication = false
     @AppStorage(UserDefaults.Key.recipientSummaryInfo) private var recipientSummaryInfoValue = RecipientSummaryInfo.defaultInfo.rawValue
@@ -49,12 +41,6 @@ struct GiftListsApp: App {
 
                     // Surface gifts, recipients, and events to Spotlight / Siri.
                     await SpotlightIndexer.reindexAll()
-                    
-                    // Allows Google to recognize my device and show demo ads to it
-                    #if canImport(AdmobSwiftUI)
-                    ExperienceManager.shared.trackingAuthorizationStatus = await ATTrackingManager
-                        .requestTrackingAuthorization()
-                    #endif
                 }
                 .task {
                     // A screenshot run writes to a throwaway store; reloading the widgets off it
@@ -112,6 +98,11 @@ struct GiftListsApp: App {
             case .active:
                 Task {
                     await biometrics.authenticate()
+                    // After unlocking, so the Face ID sheet can't swallow the tracking prompt
+                    #if canImport(AdmobSwiftUI)
+                    guard !ScreenshotMode.isActive else { return }
+                    await ExperienceManager.shared.requestTrackingThenStartAds()
+                    #endif
                 }
             case .background:
                 #if !os(macOS)
