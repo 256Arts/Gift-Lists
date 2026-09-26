@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B397A052ED0DD8A000314AE /* AdmobSwiftUI in Frameworks */ = {isa = PBXBuildFile; platformFilter = ios; productRef = 1B397A042ED0DD8A000314AE /* AdmobSwiftUI */; };
 		1B6B670A2A6F45E90067EFD6 /* Gift Lists Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1B6B66FD2A6F45E60067EFD6 /* Gift Lists Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1BAA000400000000000000CD /* Gift Lists Widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1BAA000400000000000000C2 /* Gift Lists Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -150,6 +151,7 @@
 		1B08D6602926EB9D00B7038A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				1B397A052ED0DD8A000314AE /* AdmobSwiftUI in Frameworks */,
 			);
 		};
 		1B6B66FA2A6F45E60067EFD6 /* Frameworks */ = {
@@ -356,6 +358,10 @@
 				es,
 			);
 			mainGroup = 1B08D65A2926EB9D00B7038A;
+			packageReferences = (
+				1B397A022ED0DD4C000314AE /* XCRemoteSwiftPackageReference "AdmobSwiftUI" */,
+				1B397A0A2ED0DD4C000314AE /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
+			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 1B08D6642926EB9D00B7038A /* Products */;
 			projectDirPath = "";
@@ -972,9 +978,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1B397A022ED0DD4C000314AE /* XCRemoteSwiftPackageReference "AdmobSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dearhui/AdmobSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		1B397A0A2ED0DD4C000314AE /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1B397A042ED0DD8A000314AE /* AdmobSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1B397A022ED0DD4C000314AE /* XCRemoteSwiftPackageReference "AdmobSwiftUI" */;
+			productName = AdmobSwiftUI;
+		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1B08D65B2926EB9D00B7038A /* Project object */;
