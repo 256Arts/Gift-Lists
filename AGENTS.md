@@ -1,0 +1,53 @@
+# AGENTS.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Overview
+
+Gift Lists (bundle id `com.jaydenirwin.holidaygiftslist`, internally "Holiday Gifts List") is a SwiftUI app for tracking gifts, recipients, and gifting events. It is a single Xcode project with three shipping targets: the main multiplatform app (iOS, macOS, visionOS), a companion watchOS app, and a widget extension. There is no Swift Package manifest — dependencies are managed through the Xcode project.
+
+`Gift Lists Shared/` is a synchronized folder compiled into all three — the `@Model` types, their sort/filter extensions, and `GiftListsStore`. Anything a widget needs goes there; everything else stays in `Gift Lists/`.
+
+## Build & Run
+
+This is an Xcode project (`Gift Lists.xcodeproj`). Schemes: `Gift Lists` (main app), `Gift Lists Watch App`, and the two screenshot schemes below. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
+
+Unit tests (Swift Testing) live in `GiftListsTests/`, run by the `Gift Lists` scheme's Test action. The target has no host app — it compiles `Gift Lists Shared` directly and uses an in-memory `ModelContainer` — so cover model logic there: `xcodebuild test -project "Gift Lists.xcodeproj" -scheme "Gift Lists" -destination 'platform=macOS' -only-testing:GiftListsTests`.
+
+## App Store screenshots
+
+`screenshots` (in `Repos/Scripts`, configured by `.screenshots.conf`) drives every platform. The walk itself is one UI test — `GiftListsUITests/ScreenshotTests.swift` — branching per platform, launched with `-screenshotMode` so the app seeds `ScreenshotMode.container` instead of the real store.
+
+Two test targets share that one source folder, because xcodebuild resolves a UI test bundle's platform from the app it is bound to (`TEST_TARGET_NAME`): `GiftListsUITests` (scheme `Screenshots`, bound to the iOS/macOS/visionOS app) and `GiftListsWatchUITests` (scheme `Screenshots Watch`, bound to the watch app). Point a new platform at the target that already matches it rather than adding watchOS to the iOS bundle — that combination installs the iOS runner on the watch and fails preflight.
+
+watchOS quirks, all handled in the test's `#if os(watchOS)` branch: the list cannot be filtered to an event (watchOS draws no affordance for `.toolbarTitleMenu`), so there is no wallpaper shot; there is no Shopping List tab; and `simctl status_bar override` is unsupported, so watch shots carry the real clock. The watch runner also must not carry the unsandboxed entitlement the Mac one does — an `app-sandbox` key there fails launch preflight.
+
+## Architecture
+
+**Persistence is SwiftData.** The three `@Model` classes — `Gift`, `Recipient`, `Event` — are the entire data layer. There are no view models or repositories; views query and mutate the model context directly via `@Query` / `@Environment(\.modelContext)`.
+
+- A `Gift` belongs to an optional `Recipient` and an optional `Event`, and has a `Status` (idea → inTransit → acquired → wrapped → given). Custom `Array` sort extensions (`[Gift].sorted()`, `[Recipient].sorted(by:)`) encode the display ordering rules — status priority then price then name for gifts; user-selectable sort for recipients.
+- `Recipient` uses the sentinel name `"<Me>"` (see `Recipient.userName` / `isMe`) to represent the user's own wishlist. The "My Wishlist" tab filters on this. Birthday-related computed properties are `@Transient`.
+- **All model properties are optional.** This is a SwiftData lightweight-migration requirement — preserve it when adding properties, and handle nil throughout (the existing code uses `??` defaults extensively).
+
+The store itself lives in an App Group container (`GiftListsStore`), because a widget runs in its own process and cannot read the app's own container. The identifier differs per platform — iOS demands a `group.` prefix, macOS the team identifier — so it comes from the `APP_GROUP_IDENTIFIER` build setting in the entitlements and from a matching `#if os(macOS)` in `GiftListsStore`; change both together. A pre-App-Group install's store is copied across on first launch.
+
+**Model container selection is environment-dependent**: the simulator (and macOS DEBUG) loads `previewContainer` (in-memory, seeded with sample data from `Preview Content/PreviewContainer.swift`), while real devices use a persistent CloudKit-backed container. The iOS/macOS/visionOS app routes this through one accessor — `sharedModelContainer` (`App Intents/SharedModelContainer.swift`) — so the SwiftUI scene and the App Intents read/write the same store. (`GiftListsWatchApp` still inlines its own container, with a leaner `[Gift, Recipient]` schema; it honours `ScreenshotMode` but is otherwise not routed through `sharedModelContainer`, which is excluded from the watch target.) When changing the model schema, update `PreviewContainer.swift` too or previews/simulator runs will break.
+
+**App Intents power Siri / Spotlight / Shortcuts** (`App Intents/`, main app only — excluded from the watch target via `project.pbxproj` membership exceptions). `Gift`/`Recipient`/`Event` each expose an `AppEntity` + `EntityStringQuery` keyed by a stable `identifier: UUID?` added to the model (legacy nil records are backfilled lazily via `ensuredIdentifier`); `Status` is an `AppEnum`. Action intents (`AddGiftIntent`, `AddRecipientIntent`, `MarkGiftStatusIntent`) run `@MainActor` against `sharedModelContainer.mainContext`; `GiftListsShortcuts` registers the spoken phrases. Keep this code platform-agnostic enough to compile, but it is excluded from watchOS — add new intent files to the watch membership-exception list in the project file.
+
+**Widgets** (`Gift Lists Widgets/`, iOS/iPadOS/macOS/visionOS Home Screen) show the Shopping List and My Wishlist. Both are the same view — `GiftListWidgetView` — with `GiftListKind` supplying the title, the deep link, and whether rows can be ticked off; the lists themselves come from the `[Gift].shoppingList(for:)` / `.wishlist` extensions the app's own tabs use, so the two cannot drift. Shopping rows carry a `MarkGiftAcquiredIntent` button. Taps deep-link through the `giftlists://` scheme into `MainTab`, handled in `MainTabView`. The app reloads timelines from `WidgetRefresh`, debounced off `ModelContext.didSave`.
+
+**Settings are `@AppStorage`** keyed by string constants centralized in `UserDefaults.Key` (`Models/UserDefaults.swift`). On macOS these are surfaced as menu-bar commands in `GiftListsApp`; add new keys there to keep them in one place.
+
+**Platform branching is pervasive via `#if os(...)`.** macOS uses a sidebar `TabView` with a per-event tab plus All Gifts/Wishlist/Shopping; iOS/visionOS use a flatter three-tab layout (see `MainTabView`). Expect to handle macOS separately for navigation, window sizing, and wallpaper behavior.
+
+**Privacy/biometric gating:** `BiometricAuthentication` (Face ID / Touch ID) blurs the UI via `.redacted(reason: .privacy)` until authenticated, re-locking on background. Controlled by the `requireAuthenication` setting (note the existing spelling of that key — match it).
+
+**Ads & app review** are centralized in `ExperienceManager` (singleton). Ads come from the optional `AdmobSwiftUI` dependency, gated behind `#if canImport(AdmobSwiftUI)` so the app builds and runs without it. `shouldShowAds` and review-prompt thresholds (`giftCountsToAskForReview`, keyed on `giftsCreatedCount`) live here — don't scatter this logic into views.
+
+## Conventions
+
+- File naming follows SwiftData/SwiftUI roles: `Models/` holds `@Model` types and shared enums/extensions; `Views/` holds SwiftUI views, with `*Row` views for list cells and `New*View` for creation sheets.
+- Keep new ad/tracking code inside `#if canImport(AdmobSwiftUI)` guards so non-ad builds keep working.
+- `Gift.amazonURL` builds a region-aware Amazon search link — region logic lives on the model, not in views.
