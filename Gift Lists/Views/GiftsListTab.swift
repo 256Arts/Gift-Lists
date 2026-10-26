@@ -110,6 +110,9 @@ struct GiftsListTab: View {
         .searchable(text: $searchText, prompt: "Gifts, Notes, and Recipients")
         #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        // Photos are busy and mostly bright, so the bar over one reads in dark mode: a white title
+        // and a dark search field, whichever appearance the rest of the app is in.
+        .toolbarColorScheme(eventWallpaper == nil ? nil : .dark, for: .navigationBar)
         .toolbarTitleMenu {
             Picker("Event Filter", selection: $eventFilter) {
                 ForEach(events) { event in
@@ -300,6 +303,22 @@ struct GiftsListTab: View {
             }
             #endif
             .ignoresSafeArea()
+        #if os(iOS)
+        if eventWallpaper != nil {
+            // A scrim under the bar, so its title and search field hold up on light photos.
+            LinearGradient(
+                stops: [
+                    .init(color: .black.opacity(0.6), location: 0),
+                    .init(color: .black.opacity(0.45), location: 0.6),
+                    .init(color: .clear, location: 1)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 280)
+            .ignoresSafeArea()
+        }
+        #endif
     }
     
     @ViewBuilder
