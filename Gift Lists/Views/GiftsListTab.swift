@@ -303,22 +303,6 @@ struct GiftsListTab: View {
             }
             #endif
             .ignoresSafeArea()
-        #if os(iOS)
-        if eventWallpaper != nil {
-            // A scrim under the bar, so its title and search field hold up on light photos.
-            LinearGradient(
-                stops: [
-                    .init(color: .black.opacity(0.6), location: 0),
-                    .init(color: .black.opacity(0.45), location: 0.6),
-                    .init(color: .clear, location: 1)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(height: 280)
-            .ignoresSafeArea()
-        }
-        #endif
     }
     
     @ViewBuilder
