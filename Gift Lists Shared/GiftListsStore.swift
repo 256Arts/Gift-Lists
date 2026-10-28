@@ -42,28 +42,49 @@ enum GiftListsStore {
 
     private static let storeName = "default.store"
 
+    /// Which process is opening the store, which decides what it is allowed to do to it.
+    enum Role {
+        /// Owns the store: brings a pre-App-Group install's gifts across, and is the only process
+        /// that mirrors to CloudKit.
+        case app
+        /// Reads the store and writes the odd status change, but never syncs and never creates it.
+        case widget
+    }
+
     /// A read-write container on whichever store this build can reach.
     ///
-    /// Only the app passes `copyingLegacyStore`, and it matters that only the app does: whoever
-    /// opens the group store first creates it, and a store the widget created empty would look to
-    /// the app like one that had already been brought across, leaving a pre-App-Group install
-    /// staring at an empty list. So the widget does not open a store that is not there yet — it
-    /// has nothing to draw either way, and one launch of the app fixes it.
+    /// Only the app copies the legacy store, and it matters that only the app does: whoever opens
+    /// the group store first creates it, and a store the widget created empty would look to the
+    /// app like one that had already been brought across, leaving a pre-App-Group install staring
+    /// at an empty list. So the widget does not open a store that is not there yet — it has
+    /// nothing to draw either way, and one launch of the app fixes it.
+    ///
+    /// Only the app mirrors to CloudKit, too. Core Data's CloudKit mirroring assumes one process
+    /// per store; a second mirroring delegate in a short-lived widget process races the app's over
+    /// the same sync metadata, and when either decides the zone or account changed it purges every
+    /// mirrored row locally — gone from this device, untouched in iCloud and on every other one.
+    /// The widget's writes still sync: they land in the store's persistent history, which the
+    /// app's mirroring exports the next time it runs.
     @MainActor
-    static func makeContainer(copyingLegacyStore: Bool = false) throws -> ModelContainer {
-        if copyingLegacyStore {
+    static func makeContainer(for role: Role) throws -> ModelContainer {
+        if role == .app {
             copyLegacyStoreIfNeeded()
         }
 
         let schema = Schema([Gift.self, Recipient.self, Event.self])
         guard let url else {
-            guard copyingLegacyStore else { throw StoreError.noAppGroup }
+            guard role == .app else { throw StoreError.noAppGroup }
             return try ModelContainer(for: schema)
         }
-        guard copyingLegacyStore || FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else {
+        guard role == .app || FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else {
             throw StoreError.notCreatedYet
         }
-        return try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: url))
+        let configuration = ModelConfiguration(
+            schema: schema,
+            url: url,
+            cloudKitDatabase: role == .app ? .automatic : .none
+        )
+        return try ModelContainer(for: schema, configurations: configuration)
     }
 
     enum StoreError: Error {

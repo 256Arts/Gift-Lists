@@ -3,12 +3,11 @@ import SwiftData
 
 /// The widgets' handle on the same store the app writes to.
 ///
-/// Built exactly the way `sharedModelContainer` builds the app's, through `GiftListsStore`, so the
-/// two processes agree about where the gifts are and how the store is configured — including
-/// CloudKit, so a gift ticked off from a widget reaches the other devices without waiting for the
-/// app to be opened.
+/// Built through `GiftListsStore`, like `sharedModelContainer`, so the two processes agree about
+/// where the gifts are. Unlike the app's, it does not sync — see `GiftListsStore.Role` — so a gift
+/// ticked off from a widget reaches other devices the next time the app runs.
 @MainActor
-let widgetModelContainer: ModelContainer? = try? GiftListsStore.makeContainer()
+let widgetModelContainer: ModelContainer? = try? GiftListsStore.makeContainer(for: .widget)
 
 extension ModelContainer {
 

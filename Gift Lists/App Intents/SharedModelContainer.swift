@@ -15,6 +15,6 @@ let sharedModelContainer: ModelContainer = {
     #if (targetEnvironment(simulator) || os(macOS)) && DEBUG
     return previewContainer
     #else
-    return try! GiftListsStore.makeContainer(copyingLegacyStore: true)
+    return try! GiftListsStore.makeContainer(for: .app)
     #endif
 }()
