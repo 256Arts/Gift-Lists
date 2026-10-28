@@ -51,6 +51,18 @@
               "appearance" : "tinted",
               "value" : 0.5
             }
+          ],
+          "position-specializations" : [
+            {
+              "idiom" : "watchOS",
+              "value" : {
+                "scale" : 1.07,
+                "translation-in-points" : [
+                  0,
+                  0
+                ]
+              }
+            }
           ]
         }
       ],
