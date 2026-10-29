@@ -12,6 +12,7 @@ extension UserDefaults {
         static let recipientSortBy = "recipientSortBy"
         static let giftSortBy = "giftSortBy"
         static let hiddenGiftStatuses = "hiddenGiftStatuses"
+        static let lastCloudSync = "lastCloudSync"
     }
     
 }

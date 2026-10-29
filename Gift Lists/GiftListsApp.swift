@@ -9,6 +9,11 @@ import AdmobSwiftUI
 @main
 struct GiftListsApp: App {
     
+    init() {
+        // Before the scene touches `sharedModelContainer`, so the store's CloudKit setup is heard.
+        CloudSync.shared.start()
+    }
+    
     @AppStorage(UserDefaults.Key.requireAuthenication) private var requireAuthenication = false
     @AppStorage(UserDefaults.Key.recipientSummaryInfo) private var recipientSummaryInfoValue = RecipientSummaryInfo.defaultInfo.rawValue
     @AppStorage(UserDefaults.Key.showEventWallpaper) private var showEventWallpaper = true
@@ -66,6 +71,10 @@ struct GiftListsApp: App {
         .defaultSize(CGSize(width: 500, height: 700))
         #endif
         .commands {
+            CommandGroup(after: .appInfo) {
+                CloudSyncMenu()
+            }
+            
             CommandGroup(after: .newItem) {
                 Toggle("Require \(biometryType.name ?? "")", systemImage: biometryType.systemImageName ?? "", isOn: $requireAuthenication)
             }

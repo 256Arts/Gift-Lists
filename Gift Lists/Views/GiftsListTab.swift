@@ -385,6 +385,8 @@ struct GiftsListTab: View {
         .pickerStyle(.menu)
         
         if !isAssistiveAccessEnabled {
+            CloudSyncMenu()
+
             // In submenu since there are already lots of menu items
             Menu("About App", systemImage: "info.circle") {
                 Link(destination: URL(string: "https://www.256arts.com/")!) {
