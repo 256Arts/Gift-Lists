@@ -75,13 +75,16 @@ final class CloudSync {
         }
     }
 
-    /// A CloudKit partial failure only says "some items failed"; the first item's error says why.
+    /// A CloudKit partial failure only says "some items failed"; an item's error says why. Mirroring
+    /// saves atomically, so one bad record fails its whole batch and every other record reports
+    /// only `batchRequestFailed` ("Atomic failure") — skip those to reach the record that caused it.
     private static func underlyingError(_ error: Error) -> NSError {
-        if let ckError = error as? CKError, ckError.code == .partialFailure,
-           let itemError = ckError.partialErrorsByItemID?.values.first {
-            return itemError as NSError
+        guard let ckError = error as? CKError, ckError.code == .partialFailure,
+              let itemErrors = ckError.partialErrorsByItemID?.values else {
+            return error as NSError
         }
-        return error as NSError
+        let cause = itemErrors.first { ($0 as? CKError)?.code != .batchRequestFailed } ?? itemErrors.first
+        return cause.map { $0 as NSError } ?? error as NSError
     }
 
     /// The failure to show, if sync is not working.
