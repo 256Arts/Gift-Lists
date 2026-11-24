@@ -106,6 +106,20 @@ struct GiftListTests {
         #expect(gift.amazonURL == nil)
     }
 
+    @Test(arguments: [
+        ("https://www.apple.com/airpods/", "https://www.apple.com/airpods/"),
+        ("  amazon.ca/dp/B0C33XXS56 ", "https://amazon.ca/dp/B0C33XXS56"),
+        ("http://example.com", "http://example.com"),
+    ])
+    func urlFromUserInputAcceptsWebLinks(input: String, expected: String) {
+        #expect(Gift.url(fromUserInput: input) == URL(string: expected))
+    }
+
+    @Test(arguments: ["", "   ", "not a link", "localhost", "mailto:me@example.com", "ftp://example.com"])
+    func urlFromUserInputRejectsEverythingElse(input: String) {
+        #expect(Gift.url(fromUserInput: input) == nil)
+    }
+
 }
 
 struct StatusStorageTests {

@@ -95,6 +95,26 @@ final class Gift {
     var recipient: Recipient?
     var event: Event?
     var status: Status?
+    /// The product page the gift is bought from.
+    var url: URL?
+    /// A small JPEG thumbnail of the product, taken from `url`'s link preview when the link is set.
+    ///
+    /// Stored rather than loaded from the page's image URL: link previews hand back image bytes, not
+    /// a URL, retailer image URLs expire, and the widget can't load anything over the network.
+    @Attribute(.externalStorage) var imageData: Data?
+    
+    /// Turns what someone typed or pasted into a web link, adding `https://` when it's left off.
+    /// Returns nil for anything that isn't plausibly a web address.
+    static func url(fromUserInput input: String) -> URL? {
+        let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, !text.contains(where: \.isWhitespace) else { return nil }
+        let withScheme = text.contains("://") ? text : "https://\(text)"
+        guard let url = URL(string: withScheme),
+              let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme),
+              url.user() == nil,
+              let host = url.host(), host.contains(".") else { return nil }
+        return url
+    }
     
     var amazonURL: URL? {
         guard let title else { return nil }

@@ -21,6 +21,8 @@ struct NewGiftView: View {
     @State var price: Double = 0.0
     @State var status: Status = .idea
     @State var notes: String = ""
+    @State var url: URL?
+    @State var imageData: Data?
     @State var event: Event?
 
     var body: some View {
@@ -51,13 +53,7 @@ struct NewGiftView: View {
                 }
                 
                 #if !os(watchOS)
-                TextEditor(text: $notes)
-                    .overlay(alignment: .leading) {
-                        if notes.isEmpty {
-                            Text("Notes")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                NotesAndLinkFields(notes: $notes, url: $url, imageData: $imageData, title: $title)
                 #else
                 if !notes.isEmpty {
                     Text(notes)
@@ -95,6 +91,8 @@ struct NewGiftView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Add", systemImage: "checkmark") {
                     let gift = Gift(title: title, sortOrder: sortOrder, price: price, notes: notes, status: status, recipient: recipient, event: event)
+                    gift.url = url
+                    gift.imageData = imageData
                     modelContext.insert(gift)
                     giftsCreatedCount += 1
                     #if !os(watchOS)

@@ -44,6 +44,7 @@ let previewContainer: ModelContainer = {
         Gift(title: "LEGO Death Star", sortOrder: 6, price: 1000, status: .inTransit, recipient: chris, event: holly),
         Gift(title: "Hot Chocolate", sortOrder: 7, price: 20, status: .idea, recipient: chris, event: holly)
     ]
+    gifts.first { $0.title == "iPad" }?.url = URL(string: "https://www.apple.com/ipad/")
     for gift in gifts {
         container.mainContext.insert(gift)
     }

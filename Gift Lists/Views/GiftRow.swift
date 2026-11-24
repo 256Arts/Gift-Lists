@@ -12,6 +12,12 @@ struct GiftRow: View {
     
     var body: some View {
         HStack {
+            #if !os(watchOS)
+            if let imageData = gift.imageData {
+                GiftThumbnail(data: imageData, size: 28)
+            }
+            #endif
+            
             Text(gift.title ?? "")
                 .privacySensitive()
             
@@ -76,11 +82,7 @@ struct GiftRow: View {
         }
         #if !os(watchOS)
         .contextMenu {
-            if let url = gift.amazonURL {
-                Link(destination: url) {
-                    Label("Search Amazon", systemImage: "magnifyingglass")
-                }
-            }
+            ShoppingLink(gift: gift)
             Button("Delete", systemImage: "trash", role: .destructive) {
                 modelContext.delete(gift)
             }

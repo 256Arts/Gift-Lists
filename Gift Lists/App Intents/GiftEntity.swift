@@ -19,6 +19,8 @@ struct GiftEntity: IndexedEntity {
     let status: Status
     /// Resolved recipient name, with the user's own wishlist normalized to "Me".
     let recipientName: String?
+    /// The gift's product link, carried along when the gift is shared as text.
+    let url: URL?
 
     var displayRepresentation: DisplayRepresentation {
         if let recipientName {
@@ -44,6 +46,7 @@ struct GiftEntity: IndexedEntity {
         self.price = gift.price ?? 0
         self.status = gift.status ?? .idea
         self.recipientName = gift.recipient?.name.map { $0 == Recipient.userName ? "Me" : $0 }
+        self.url = gift.url
     }
 }
 
@@ -55,7 +58,8 @@ extension GiftEntity: Transferable {
     }
 
     var transferText: String {
-        recipientName.map { "\(title) for \($0)" } ?? title
+        let text = recipientName.map { "\(title) for \($0)" } ?? title
+        return url.map { "\(text)\n\($0.absoluteString)" } ?? text
     }
 }
 

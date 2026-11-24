@@ -50,4 +50,5 @@ The store itself lives in an App Group container (`GiftListsStore`), because a w
 
 - File naming follows SwiftData/SwiftUI roles: `Models/` holds `@Model` types and shared enums/extensions; `Views/` holds SwiftUI views, with `*Row` views for list cells and `New*View` for creation sheets.
 - Keep new ad/tracking code inside `#if canImport(AdmobSwiftUI)` guards so non-ad builds keep working.
-- `Gift.amazonURL` builds a region-aware Amazon search link — region logic lives on the model, not in views.
+- `Gift.amazonURL` builds a region-aware Amazon search link — region logic lives on the model, not in views. `ShoppingLink` prefers the gift's own `url` and falls back to it; use it rather than linking either directly.
+- `Gift.imageData` is a ~300px JPEG thumbnail taken from the link's preview (`LinkPreview`), stored so widgets and offline devices can show it. `NotesAndLinkFields` owns the notes/link editing for both `GiftView` and `NewGiftView`.

@@ -14,6 +14,10 @@ struct ShoppingRow: View {
     var body: some View {
         NavigationLink(value: gift) {
             HStack {
+                if let imageData = gift.imageData {
+                    GiftThumbnail(data: imageData)
+                }
+                
                 VStack(alignment: .leading) {
                     Text(gift.title ?? "")
                         .privacySensitive()
@@ -34,12 +38,9 @@ struct ShoppingRow: View {
                 
                 Spacer()
                 
-                if let url = gift.amazonURL {
-                    Link(destination: url) {
-                        Image(systemName: "magnifyingglass")
-                    }
+                ShoppingLink(gift: gift)
+                    .labelStyle(.iconOnly)
                     .buttonStyle(.borderless)
-                }
             }
         }
         .accessibilityRemoveTraits(.isSelected)

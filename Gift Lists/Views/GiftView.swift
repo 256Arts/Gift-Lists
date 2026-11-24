@@ -54,13 +54,7 @@ struct GiftView: View {
                 }
                 
                 #if !os(watchOS)
-                TextEditor(text: $notes)
-                    .overlay(alignment: .leading) {
-                        if notes.isEmpty {
-                            Text("Notes")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                NotesAndLinkFields(notes: $notes, url: $gift.url, imageData: $gift.imageData, title: $title)
                 #else
                 if !notes.isEmpty {
                     Text(notes)
@@ -98,11 +92,7 @@ struct GiftView: View {
             }
             #if !os(watchOS)
             Section {
-                if let url = gift.amazonURL {
-                    Link(destination: url) {
-                        Label("Search Amazon", systemImage: "magnifyingglass")
-                    }
-                }
+                ShoppingLink(gift: gift)
             }
             #endif
             Section {

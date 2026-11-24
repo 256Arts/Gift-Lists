@@ -208,6 +208,8 @@ enum ScreenshotMode {
             Gift(title: "Trail Backpack", sortOrder: 29, price: 145, status: .idea, recipient: me, event: birthday),
             Gift(title: "Fountain Pen", sortOrder: 30, price: 70, status: .idea, recipient: me, event: birthday)
         ]
+        // The details shot shows the link field filled in.
+        gifts.first { $0.title == featuredGiftTitle }?.url = URL(string: "https://www.breville.com/us/en/products/espresso/bes876.html")
         for gift in gifts {
             context.insert(gift)
         }
