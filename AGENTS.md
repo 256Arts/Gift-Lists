@@ -12,7 +12,7 @@ Gift Lists (bundle id `com.jaydenirwin.holidaygiftslist`, internally "Holiday Gi
 
 This is an Xcode project (`Gift Lists.xcodeproj`). Schemes: `Gift Lists` (main app), `Gift Lists Widgets`, and the two screenshot schemes below. The watch app has no scheme of its own; build it by target: `xcodebuild -project "Gift Lists.xcodeproj" -target "Gift Lists Watch App" -sdk watchsimulator build`. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
 
-Unit tests (Swift Testing) live in `GiftListsTests/`, run by the `Gift Lists` scheme's Test action. The target has no host app — it compiles `Gift Lists Shared` directly and uses an in-memory `ModelContainer` — so cover model logic there: `xcodebuild test -project "Gift Lists.xcodeproj" -scheme "Gift Lists" -destination 'platform=iOS Simulator,name=iPhone 18 Pro' -only-testing:GiftListsTests`. Run them on a simulator: a macOS destination still builds the app, whose entitlements need a development profile that covers this Mac.
+Unit tests (Swift Testing) live in `GiftListsTests/`, run by the `Gift Lists` scheme's Test action. The target has no host app — it compiles `Gift Lists Shared` directly and uses an in-memory `ModelContainer` — so cover model logic there: `xcodebuild test -project "Gift Lists.xcodeproj" -scheme "Gift Lists" -destination 'platform=macOS' -only-testing:GiftListsTests`.
 
 ## App Store screenshots
 
