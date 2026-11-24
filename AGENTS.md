@@ -10,9 +10,9 @@ Gift Lists (bundle id `com.jaydenirwin.holidaygiftslist`, internally "Holiday Gi
 
 ## Build & Run
 
-This is an Xcode project (`Gift Lists.xcodeproj`). Schemes: `Gift Lists` (main app), `Gift Lists Watch App`, and the two screenshot schemes below. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
+This is an Xcode project (`Gift Lists.xcodeproj`). Schemes: `Gift Lists` (main app), `Gift Lists Widgets`, and the two screenshot schemes below. The watch app has no scheme of its own; build it by target: `xcodebuild -project "Gift Lists.xcodeproj" -target "Gift Lists Watch App" -sdk watchsimulator build`. Normally just build and run from Xcode, or via `xcodebuild -project "Gift Lists.xcodeproj" -scheme "Gift Lists" build`.
 
-Unit tests (Swift Testing) live in `GiftListsTests/`, run by the `Gift Lists` scheme's Test action. The target has no host app — it compiles `Gift Lists Shared` directly and uses an in-memory `ModelContainer` — so cover model logic there: `xcodebuild test -project "Gift Lists.xcodeproj" -scheme "Gift Lists" -destination 'platform=macOS' -only-testing:GiftListsTests`.
+Unit tests (Swift Testing) live in `GiftListsTests/`, run by the `Gift Lists` scheme's Test action. The target has no host app — it compiles `Gift Lists Shared` directly and uses an in-memory `ModelContainer` — so cover model logic there: `xcodebuild test -project "Gift Lists.xcodeproj" -scheme "Gift Lists" -destination 'platform=iOS Simulator,name=iPhone 18 Pro' -only-testing:GiftListsTests`. Run them on a simulator: a macOS destination still builds the app, whose entitlements need a development profile that covers this Mac.
 
 ## App Store screenshots
 
@@ -50,5 +50,5 @@ The store itself lives in an App Group container (`GiftListsStore`), because a w
 
 - File naming follows SwiftData/SwiftUI roles: `Models/` holds `@Model` types and shared enums/extensions; `Views/` holds SwiftUI views, with `*Row` views for list cells and `New*View` for creation sheets.
 - Keep new ad/tracking code inside `#if canImport(AdmobSwiftUI)` guards so non-ad builds keep working.
-- `Gift.amazonURL` builds a region-aware Amazon search link — region logic lives on the model, not in views. `ShoppingLink` prefers the gift's own `url` and falls back to it; use it rather than linking either directly.
+- `Gift.amazonURL` builds a region-aware Amazon search link — region logic lives on the model, not in views. `ShoppingLink` prefers the gift's own `url` and falls back to the Amazon search; use it rather than linking either directly.
 - `Gift.imageData` is a ~300px JPEG thumbnail taken from the link's preview (`LinkPreview`), stored so widgets and offline devices can show it. `NotesAndLinkFields` owns the notes/link editing for both `GiftView` and `NewGiftView`.
