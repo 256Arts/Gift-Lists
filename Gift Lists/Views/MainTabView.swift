@@ -25,6 +25,18 @@ enum MainTab: Hashable {
             return nil
         }
     }
+
+    /// The tab an App Store event link's `destination` query item asks for.
+    init?(eventDestination: AppStoreEventLink.Destination) {
+        switch eventDestination {
+        case .wishlist:
+            self = .wishlist
+        case .shopping:
+            self = .shopping
+        case .gifts:
+            self = .gifts
+        }
+    }
 }
 
 struct MainTabView: View {
@@ -32,6 +44,9 @@ struct MainTabView: View {
     @Query(sort: \Event.name) var events: [Event]
 
     @State private var selection = MainTab.gifts
+
+    /// Set by `GiftListsApp` after an App Store event link names a destination; `nil` otherwise.
+    @Binding var pendingSelection: MainTab?
 
     var body: some View {
         TabView(selection: $selection) {
@@ -98,9 +113,15 @@ struct MainTabView: View {
                 selection = tab
             }
         }
+        .onChange(of: pendingSelection) { _, newValue in
+            if let newValue {
+                selection = newValue
+                pendingSelection = nil
+            }
+        }
     }
 }
 
 #Preview {
-    MainTabView()
+    MainTabView(pendingSelection: .constant(nil))
 }

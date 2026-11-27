@@ -24,6 +24,8 @@ struct GiftListsApp: App {
     
     @State private var biometrics = BiometricAuthentication()
     @State private var showingEvent = false
+    @State private var eventTitle: String?
+    @State private var eventDestination: MainTab?
     
     private var biometryType: LABiometryType {
         LAContext().biometryType
@@ -31,7 +33,7 @@ struct GiftListsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            MainTabView(pendingSelection: $eventDestination)
                 .redacted(reason: biometrics.isAuthenticated ? [] : .privacy)
                 .task {
                     // A screenshot run skips all of this: a tip popover or the tracking alert would
@@ -56,12 +58,19 @@ struct GiftListsApp: App {
                 .alert("Event Intro", isPresented: $showingEvent) {
                     Button("OK") { }
                 } message: {
-                    Text("Now let's celebrate by adding some gifts to the list and trying out the new features!")
+                    // `eventTitle` is the link's own plain text, so it's shown verbatim — never
+                    // looked up as a localization key the way the generic intro below it is.
+                    if let eventTitle {
+                        Text(eventTitle) + Text("\n\n") + Text("Now let's celebrate by adding some gifts to the list and trying out the new features!")
+                    } else {
+                        Text("Now let's celebrate by adding some gifts to the list and trying out the new features!")
+                    }
                 }
                 .onOpenURL { url in
-                    if url.path().contains("giftlists/appstoreevent") {
-                        showingEvent = true
-                    }
+                    guard let link = AppStoreEventLink(url: url) else { return }
+                    eventTitle = link.title
+                    eventDestination = link.destination.flatMap(MainTab.init(eventDestination:))
+                    showingEvent = true
                 }
                 .screenshotModeStatus()
         }
